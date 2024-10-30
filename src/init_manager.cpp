@@ -1,5 +1,6 @@
 #include "init_manager.h"
 
+namespace evsim{
 InitManager::InitManager()
 {
 }
@@ -26,4 +27,5 @@ InitManager::InitManager(std::string path)
 std::vector<CAgent*>& InitManager::get_agent_list()
 {
 	return m_agentList;
+}
 }

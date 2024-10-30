@@ -3,6 +3,7 @@
 #include <iostream>
 #include "definition.hpp"
 
+namespace evsim{
 class CAgent
 {
 protected:
@@ -37,3 +38,5 @@ public:
 public:
     friend std::ostream& operator<<(std::ostream& os, const CAgent& ag);
 };
+
+}

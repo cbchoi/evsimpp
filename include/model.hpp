@@ -1,15 +1,16 @@
 #pragma once
 
 #include <string>
-#include <ostreams>
+#include <ostream>
 
 #include "definition.hpp"
-#include "object.h"
+#include "object.hpp"
 
-class CModel : public CObject
-{
-public:
-	CModel(UNIQ_TYPE _id):CObject(_id, MODEL_TYPE){}
+namespace evsim{
+	class CModel : public CObject
+	{
+	public:
+		CModel(UNIQ _id, UNIQ _type) :CObject(_id, MODEL_TYPE|_type) {}
 
 public:
 	const std::string& get_name() const { return m_model_name; }
@@ -19,6 +20,9 @@ private:
 	std::string m_model_name;
 
 protected:
-	static UNIQ_TYPE OBJECT_ID;
+	static UNIQ OBJECT_ID;
 };
-UNIQ_TYPE CModel::OBJECT_ID = ENGINE_OBJECT;
+
+UNIQ CModel::OBJECT_ID = 0;
+
+}

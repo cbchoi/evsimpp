@@ -5,6 +5,7 @@
 #include "agent.hpp"
 #include "tinyxml2.h"
 
+namespace evsim{
 class InitManager
 {
 public:
@@ -18,3 +19,4 @@ private:
     tinyxml2::XMLDocument doc;
     std::vector<CAgent*> m_agentList;
 };
+}

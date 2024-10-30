@@ -5,7 +5,7 @@
 #include "agent.hpp"
 #include "mmanager.hpp"
 
-#include "system_executor.h"
+#include "system_executor.hpp"
 //#include "special_agent.hpp"
 
 #include "init_manager.h"
@@ -15,13 +15,13 @@ int main(int argc, char** argv)
     // XMLElement* titleElement = doc.FirstChildElement( "PLAY" )->FirstChildElement( "TITLE" );
     // XMLElement* attributeApproachElement = doc.FirstChildElement()->FirstChildElement( "attributeApproach" );
     // attributeApproachElement->QueryIntAttribute( "v", &v0 );
-    CSystemExecutor* sys = CSystemExecutor::create_system_executor();
-	InitManager init_manager("test.xml");
+    evsim::CSystemExecutor* sys = evsim::CSystemExecutor::create_system_executor();
+    evsim::InitManager init_manager("test.xml");
 
     /* Simulation Engine */
-    CManeuverManager mmanager;
+    evsim::CManeuverManager mmanager;
 
-    for (std::vector<CAgent*>::iterator iter = init_manager.get_agent_list().begin();
+    for (std::vector<evsim::CAgent*>::iterator iter = init_manager.get_agent_list().begin();
         iter != init_manager.get_agent_list().end(); ++iter)
         mmanager.register_publisher(*iter);
 
@@ -51,13 +51,14 @@ int main(int argc, char** argv)
         mmanager.svc(time_step);
 
         std::cout << "----" << std::endl;
-        for (std::vector<CAgent*>::iterator iter = init_manager.get_agent_list().begin();
+        for (std::vector<evsim::CAgent*>::iterator iter = init_manager.get_agent_list().begin();
             iter != init_manager.get_agent_list().end(); ++iter)
             std::cout << "Time: " << sim_time << ", " << **iter << std::endl;
         // (*iter) => CAgent*
         // *(*iter) => CAgent
-
-
     }
+    evsim::UNIQ val = 0x1000000000000000;
+    std::cout << std::hex <<val << std::endl;
+
     return 0;
 }

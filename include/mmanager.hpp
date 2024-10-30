@@ -3,6 +3,7 @@
 
 #include <vector>
 
+namespace evsim{
 class CManeuverManager
 {
 public:
@@ -22,3 +23,5 @@ private:
     std::vector<CAgent*> m_publish_list;
     std::vector<CAgent*> m_subscriber_list;
 };
+
+}

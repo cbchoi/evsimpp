@@ -6,14 +6,14 @@
 #endif
 #include <cmath>
 
-typedef unsigned long long UNIQ_TYPE;
-inline unsigned int TYPE_IDX = 0;
-constexpr UNIQ_TYPE ENGINE_TYPE  = (1 << (TYPE_IDX++));
-constexpr UNIQ_TYPE MESSAGE_TYPE = (1 << (TYPE_IDX++));
-constexpr UNIQ_TYPE MODEL_TYPE   = (1 << (TYPE_IDX++));
-constexpr UNIQ_TYPE ATOMIC_TYPE  = (1 << (TYPE_IDX++));
-constexpr UNIQ_TYPE COUPLED_TYPE = (1 << (TYPE_IDX++));
-constexpr UNIQ_TYPE GENERAL_TYPE = (1 << (TYPE_IDX++));
+namespace evsim{
+typedef unsigned long long UNIQ;
+
+constexpr UNIQ ENGINE_TYPE  = 0x8000000000000000;
+constexpr UNIQ MODEL_TYPE   = 0x4000000000000000;
+constexpr UNIQ COUPLED_TYPE = 0x0800000000000000;
+constexpr UNIQ ATOMIC_TYPE  = 0x0400000000000000;
+constexpr UNIQ MESSAGE_TYPE = 0x0800000000000000;
 
 typedef struct {
     double x;
@@ -28,4 +28,6 @@ inline double DEG2RAD(double deg)
 inline double CALC_DIST(const Pos& pos1, const Pos& pos2)
 {
     return sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
+}
+
 }

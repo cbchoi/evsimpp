@@ -1,5 +1,6 @@
 #include "mmanager.hpp"
 
+namespace evsim{
 CManeuverManager::CManeuverManager()
 {
 
@@ -84,4 +85,6 @@ void CManeuverManager::svc(double time)
                     unregister_subscriber(*iter);
             }
         }
+}
+
 }

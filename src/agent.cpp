@@ -4,6 +4,7 @@
 
 #include "agent.hpp"
 
+namespace evsim{
 /* INITIALIZE STATIC FIELDS*/
 unsigned long CAgent::AGENT_ID = 0;
 
@@ -84,3 +85,5 @@ std::ostream& operator<<( std::ostream& os, const CAgent& ag)
     return os;
 }
 
+
+}
