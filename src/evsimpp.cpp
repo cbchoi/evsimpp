@@ -9,6 +9,8 @@
 //#include "special_agent.hpp"
 
 #include "init_manager.h"
+#include "simtime.hpp"
+
 int main(int argc, char** argv)
 {// Clinet Code  
 
@@ -57,8 +59,9 @@ int main(int argc, char** argv)
         // (*iter) => CAgent*
         // *(*iter) => CAgent
     }
-    evsim::UNIQ val = 0x1000000000000000;
-    std::cout << std::hex <<val << std::endl;
+    
+    Time t = 10.0;
+    std::cout << (t==10.0) << std::endl;
 
     return 0;
 }

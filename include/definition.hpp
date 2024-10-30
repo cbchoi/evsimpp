@@ -30,4 +30,9 @@ inline double CALC_DIST(const Pos& pos1, const Pos& pos2)
     return sqrt(pow(pos1.x - pos2.x, 2) + pow(pos1.y - pos2.y, 2));
 }
 
+//typedef long double Time;
+constexpr long double Infinity = HUGE_VALL;
+
+
+
 }

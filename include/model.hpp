@@ -22,7 +22,4 @@ private:
 protected:
 	static UNIQ OBJECT_ID;
 };
-
-UNIQ CModel::OBJECT_ID = 0;
-
 }
