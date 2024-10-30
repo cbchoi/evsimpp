@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.12.1)
-project(evsimpp)
+project(model_ext)
 
-# Library Configuration
-link_directories(lib)
+# Update latest header file
+FILE(COPY "../include/agent.hpp" DESTINATION "${PROJECT_SOURCE_DIR}/include")
 
-# Source Code Configuration
 include_directories(./include)
 file(GLOB FILE_LISTS src/*)
 set(SRCS "")
@@ -16,8 +15,7 @@ endforeach()
 message("Source Files : ${SRCS}")
 
 # Compile & Linking Configuration
-add_executable(${PROJECT_NAME} ${SRCS})
-#target_link_libraries(${PROJECT_NAME} bar) # libbar.so is found in ${CMAKE_SOURCE_DIR}/lib
+add_library(${PROJECT_NAME} ${SRCS})
 
 ## Compiler Options
 if(MSVC)
@@ -34,6 +32,3 @@ else() # Clang + GCC
         -fno-rtti 
     )
 endif()
-
-# Resource Loading
-FILE(COPY resource/test.xml DESTINATION "${CMAKE_BINARY_DIR}")
