@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -13,14 +13,14 @@
 #include "atomic.hpp"
 
 #include "model.hpp"
-#include "atomic.hpp"
+#include "testatomic.hpp"
 
 using namespace evsim;
 
 int main(int argc, char** argv)
 {// Clinet Code  
 
-    evsim::CAtomic a = evsim::CAtomic("a");
+    evsim::CAtomic* a = new CTestAtomic("a");
 
     Port p = Port("one");
     Port p1 = Port("one");
@@ -30,8 +30,8 @@ int main(int argc, char** argv)
     std::cout << p2 << std::endl;
     std::cout << p3 << std::endl;
 
-    if (a.in_port().find(Port("three")) != a.in_port().end())
-		std::cout << "!!!" << std::endl;
+    if (a->in_port().find(Port("three")) != a->in_port().end())
+        std::cout << "!!!" << std::endl;
 
 #if 0
     evsim::CSystemExecutor* sys = evsim::CSystemExecutor::create_system_executor();
@@ -44,14 +44,14 @@ int main(int argc, char** argv)
         iter != init_manager.get_agent_list().end(); ++iter)
         mmanager.register_publisher(*iter);
 
-    
+
     /* Simulation Engine Initialization */
     double sim_time;
     double time_step = 1;
 
     for (sim_time = 0; sim_time < 30; sim_time += time_step)
     {
-        
+
         mmanager.svc(time_step);
 
         std::cout << "----" << std::endl;
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     }
 
     evsim::Time t = 10;
-    
+
     std::cout << (12.1 < evsim::Infinity) << std::endl;
 #endif
     return 0;

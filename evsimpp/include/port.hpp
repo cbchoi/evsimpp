@@ -21,9 +21,11 @@ namespace evsim
         unsigned long m_hash;
     };
 
+}
+
 #define DECLARE_INPUT_PORT(X) \
-class InPort_##X:public Port{\
-public: InPort_##X(): Port(#X) { }\
+class InPort_##X:public evsim::Port{\
+public: InPort_##X(): evsim::Port(#X) { }\
     bool operator==(const InPort_##X& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 
@@ -31,11 +33,10 @@ public: InPort_##X(): Port(#X) { }\
     register_input_port(X.m_hash, X.m_name)
 
 #define DECLARE_OUTPUT_PORT(X) \
-class OutPort_##X:public Port{\
-public: OutPort_##X(): Port(#X) { }\
+class OutPort_##X:public evsim::Port{\
+public: OutPort_##X(): evsim::Port(#X) { }\
     bool operator==(const OutPort_##X& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 
 #define REGISTER_OUTPUT_PORT(X) \
-    register_output_port(X.m_hash, X.m_name)	
-}
+    register_output_port(X.m_hash, X.m_name)

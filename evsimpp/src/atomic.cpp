@@ -10,9 +10,9 @@ namespace evsim
 		
 	}
 
-	void CAtomic::register_state(std::string name, unsigned long hash)
+	void CAtomic::register_state( unsigned long hash, std::string name, Time deadline)
 	{
-		m_states.insert(State(hash,name));
+		m_states.insert(State(hash,name, deadline));
 	}
 
 	const std::set<State>& CAtomic::states() const

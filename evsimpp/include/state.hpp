@@ -25,12 +25,13 @@ namespace evsim
         Time m_deadline;
     };
 
+}
+
 #define DECLARE_STATE(X, Y) \
-class State_##X:public State{\
-public: State_##X(): State(#X, Y) { }\
+class State_##X:public evsim::State{\
+public: State_##X(): evsim::State(#X, Y) { }\
     bool operator==(const State_##X& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 
 #define REGISTER_STATE(X) \
     register_state(X.m_hash, X.m_name, X.m_deadline)
-}

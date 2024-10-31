@@ -13,7 +13,7 @@ public:
 	CAtomic(std::string name);
 
 public:
-	void register_state(std::string name, unsigned long hash);
+	void register_state( unsigned long hash, std::string name, Time deadline);
 	const std::set<State>& states() const;
 
 private:
