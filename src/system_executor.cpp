@@ -6,9 +6,8 @@ void evsim::CSystemExecutor::register_entity(CModel* _mode)
 {
 }
 
-/*
+
 evsim::Time evsim::CSystemExecutor::schedule(evsim::Time t)
 {
 	return 0;
 }
-*/

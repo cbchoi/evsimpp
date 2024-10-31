@@ -19,7 +19,7 @@ public:
 public:
 	void register_entity(CModel* _mode);
 
-	//Time schedule(Time t);
+	Time schedule(Time t);
 protected:
 	static UNIQ OBJECT_ID;
 };
