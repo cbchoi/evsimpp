@@ -10,6 +10,7 @@ namespace evsim
     class State
     {
     public:
+        State();
         State(std::string name, Time deadline = Infinity);
         State(unsigned long hash, std::string name, Time deadline = Infinity);
 

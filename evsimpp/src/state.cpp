@@ -2,6 +2,11 @@
 
 namespace evsim
 {
+	State::State()
+		:m_name(""), m_deadline(-1)
+	{
+		m_hash = 0;
+	}
 	State::State(std::string name, Time deadline) :m_name(name), m_deadline(deadline)
 	{
 		hash(m_name);

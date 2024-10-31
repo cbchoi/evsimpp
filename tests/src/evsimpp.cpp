@@ -22,16 +22,26 @@ int main(int argc, char** argv)
 
     evsim::CAtomic* a = new CTestAtomic("a");
 
-    Port p = Port("one");
-    Port p1 = Port("one");
-    Port p2 = Port("two");
-    Port p3 = Port("three");
-    std::cout << p1 << std::endl;
-    std::cout << p2 << std::endl;
-    std::cout << p3 << std::endl;
+    {
+        Port p = Port("one");
+        Port p1 = Port("one");
+        Port p2 = Port("two");
+        Port p3 = Port("four");
+        std::cout << p1 << std::endl;
+        std::cout << p2 << std::endl;
+        std::cout << p3 << std::endl;
 
-    if (a->in_port().find(Port("three")) != a->in_port().end())
-        std::cout << "!!!" << std::endl;
+        if (a->in_port().find(Port("four")) != a->in_port().end())
+            std::cout << "!!!" << std::endl;
+    }
+
+    {
+        SystemMessage sm = SystemMessage();
+        Port p1 = Port("two");
+        a->external_transition(p1, sm);
+        a->internal_transition();
+    }
+    
 
 #if 0
     evsim::CSystemExecutor* sys = evsim::CSystemExecutor::create_system_executor();
