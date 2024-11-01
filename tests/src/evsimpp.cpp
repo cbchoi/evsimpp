@@ -9,39 +9,17 @@
 //#include "special_agent.hpp"
 
 #include "init_manager.h"
-#include "port.hpp"
-#include "atomic.hpp"
 
-#include "model.hpp"
-#include "testatomic.hpp"
+#include "gtest/gtest.h"
+#include "test_atomic.hpp"
 
 using namespace evsim;
 
 int main(int argc, char** argv)
 {// Clinet Code  
 
-    evsim::CAtomic* a = new CTestAtomic("a");
-
-    {
-        Port p = Port("one");
-        Port p1 = Port("one");
-        Port p2 = Port("two");
-        Port p3 = Port("four");
-        std::cout << p1 << std::endl;
-        std::cout << p2 << std::endl;
-        std::cout << p3 << std::endl;
-
-        if (a->in_port().find(Port("four")) != a->in_port().end())
-            std::cout << "!!!" << std::endl;
-    }
-
-    {
-        SystemMessage sm = SystemMessage();
-        Port p1 = Port("two");
-        a->external_transition(p1, sm);
-        a->internal_transition();
-    }
-    
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 
 #if 0
     evsim::CSystemExecutor* sys = evsim::CSystemExecutor::create_system_executor();
