@@ -1,13 +1,17 @@
 #include "system_executor.hpp"
 
-evsim::UNIQ evsim::CSystemExecutor::OBJECT_ID = 0;
-
-void evsim::CSystemExecutor::register_entity(CModel* _mode)
+namespace evsim
 {
-}
+	UNIQ CSystemExecutor::OBJECT_ID = 0;
+
+	void CSystemExecutor::register_entity(CModel* _mode)
+	{
+	}
 
 
-evsim::Time evsim::CSystemExecutor::schedule(evsim::Time t)
-{
-	return 0;
+	Time CSystemExecutor::schedule(Time t)
+	{
+		return 0;
+	}
+
 }

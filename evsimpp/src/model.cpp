@@ -2,7 +2,7 @@
 
 namespace evsim
 {
-	UNIQ evsim::CModel::OBJECT_ID = 0;
+	UNIQ CModel::OBJECT_ID = 0;
 
 	CModel::CModel(UNIQ _type, std::string name) :CObject(++OBJECT_ID, MODEL_TYPE | _type), m_model_name(name) 
 	{

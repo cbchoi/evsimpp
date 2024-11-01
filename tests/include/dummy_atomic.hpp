@@ -11,12 +11,12 @@
 
 using namespace evsim;
 
-class CDummyAtomic :public evsim::CAtomicModel
+class CDummyAtomic :public CAtomicModel
 {
 public:
 	CDummyAtomic(std::string name);
 
-	virtual void external_transition(const evsim::Port& port, const evsim::SystemMessage& msg)
+	virtual void external_transition(const Port& port, const SystemMessage& msg)
 	{
 		if(port == one && CUR_STATE == IDLE1)
 		{
@@ -32,6 +32,7 @@ public:
 		}
 		else 
 		{
+			std::cout << (int)(port == two) << int(CUR_STATE == IDLE1) << std::endl;
 			std::cout << "return to IDLE1" << std::endl;
 			SET_NEXT_STATE(IDLE1);
 		}

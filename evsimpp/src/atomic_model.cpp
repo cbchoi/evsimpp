@@ -15,9 +15,9 @@ namespace evsim
 		
 	}
 
-	void CAtomicModel::register_state( unsigned long hash, std::string name, Time deadline)
+	void CAtomicModel::register_state( State state)
 	{
-		m_states.insert(State(hash,name, deadline));
+		m_states.insert(state);
 	}
 
 	const std::set<State>& CAtomicModel::states() const

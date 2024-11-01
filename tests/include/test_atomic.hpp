@@ -45,15 +45,12 @@ namespace evsim {
         {
             const std::set<Port>::iterator iter = da.in_port().find(Port("two"));
             ASSERT_NE(iter, da.in_port().end());
-            //std::cout << *iter;
             EXPECT_EQ(iter->m_name, "two");
         }
 
         {
             const std::set<Port>::iterator iter = da.in_port().find(Port("four"));
             EXPECT_EQ(iter, da.in_port().end());
-            //if (iter == da.in_port().end())
-            //    std::cout << "EEE";
         }
     }
 

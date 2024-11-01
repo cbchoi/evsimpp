@@ -1,23 +1,17 @@
 #pragma once
 
 #include <string>
+#include "string_info.hpp"
 
 namespace evsim
 {
-    class Port
+    class Port:public StringInfo
     {
     public:
-        Port(std::string name);;
+        Port(std::string name);
         Port(unsigned long hash, std::string name);
+        virtual ~Port();
 
-    public:
-        operator unsigned long() const;
-        operator std::string() const;
-        virtual bool operator==(const Port& rhs) const { return false; };
-        void hash(const std::string& str);
-    public:
-        std::string m_name;
-        unsigned long m_hash;
     };
 
 }
@@ -34,7 +28,7 @@ public: InPort_##X(): evsim::Port(#X) { }\
 #define DECLARE_OUTPUT_PORT(X) \
 class OutPort_##X:public evsim::Port{\
 public: OutPort_##X(): evsim::Port(#X) { }\
-    bool operator==(const Port& rhs) const{\
+    bool operator==(const StringInfo& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 
 #define REGISTER_OUTPUT_PORT(port_instance) \
