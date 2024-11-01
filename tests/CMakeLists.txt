@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.12.1)
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  UGIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG b514bdc898e2951020cbdca1304b75f5950d1f59
 )		  
 # For Windows: Prevent overriding the parent project's compiler/linker settings
