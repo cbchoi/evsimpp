@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "atomic.hpp"
+#include "atomic_model.hpp"
 #include "definition.hpp"
 #include "state.hpp"
 #include "port.hpp"
@@ -11,7 +11,7 @@
 
 using namespace evsim;
 
-class CDummyAtomic :public evsim::CAtomic
+class CDummyAtomic :public evsim::CAtomicModel
 {
 public:
 	CDummyAtomic(std::string name);

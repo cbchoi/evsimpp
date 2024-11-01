@@ -1,7 +1,7 @@
 #include "dummy_atomic.hpp"
 
 CDummyAtomic::CDummyAtomic(std::string name)
-	:evsim::CAtomic(name)
+	:evsim::CAtomicModel(name)
 {
 	REGISTER_INPUT_PORT(one);
 	REGISTER_INPUT_PORT(two);
