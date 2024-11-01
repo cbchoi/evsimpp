@@ -20,8 +20,8 @@ public:
 	const std::set<Port>& in_port() const;
 	const std::set<Port>& out_port() const;
 
-	virtual void register_input_port(unsigned long hash, std::string name);
-	virtual void register_output_port(unsigned long hash, std::string name);
+	virtual void register_input_port(Port& port);
+	virtual void register_output_port(Port& port);
 
 private:
 	std::string m_model_name;
