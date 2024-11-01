@@ -524,3 +524,4 @@ x64/
 
 CMakeSettings.json
 CppProperties.json
+build/
