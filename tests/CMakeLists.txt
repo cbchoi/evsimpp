@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.12.1)
 #project(evsimpp)
+message("Configuring evsim++_tests")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -42,8 +43,8 @@ if(MSVC)
         /std:c++latest  # Define options that MSVC may identify 
     )
 else() # Clang + GCC
-    target_link_libraries(test_app PRIVATE evsimpp) # libbar.so is found in ${CMAKE_SOURCE_DIR}/lib
-    target_compile_options(test_app
+    target_link_libraries(${UNIT_TEST} PRIVATE evsimpp) # libbar.so is found in ${CMAKE_SOURCE_DIR}/lib
+    target_compile_options(${UNIT_TEST}
     PUBLIC
         -std=c++2a -Wall    # Define options that GCC/Clang may identify
     PRIVATE

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12.1)
 #project(evsimpp)
 
+message("Configuring evsim++")
+
 # Library Configuration
 #link_directories(lib)
 
