@@ -10,5 +10,5 @@ CDummyAtomic::CDummyAtomic(std::string name)
 	REGISTER_STATE(IDLE1);
 	REGISTER_STATE(IDLE2);
 
-	cur_state = IDLE1;
+	SET_INIT_STATE(IDLE1);
 }

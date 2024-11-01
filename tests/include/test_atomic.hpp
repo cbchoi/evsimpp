@@ -57,13 +57,21 @@ namespace evsim {
         }
     }
 
-    TEST_F(AtomicTest, test_transitions)
+    TEST_F(AtomicTest, test_ext_transitions)
     {
         CDummyAtomic da = CDummyAtomic("da");
         SystemMessage sm = SystemMessage();
         Port p1 = Port("two");
         da.external_transition(p1, sm);
+        EXPECT_EQ(da.IDLE2.m_name, da.get_current_state().m_name);
+    }
+
+    TEST_F(AtomicTest, test_int_transitions)
+    {
+        CDummyAtomic da = CDummyAtomic("da");
+        EXPECT_EQ(da.IDLE1.m_name, da.get_current_state().m_name);
         da.internal_transition();
+        EXPECT_EQ(da.IDLE2.m_name, da.get_current_state().m_name);
     }
 }
 

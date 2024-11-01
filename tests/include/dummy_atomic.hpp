@@ -18,36 +18,40 @@ public:
 
 	virtual void external_transition(const evsim::Port& port, const evsim::SystemMessage& msg)
 	{
-		if(port == one)
+		if(port == one && CUR_STATE == IDLE1)
 		{
-			std::cout << "one" << std::endl;
+			std::cout << static_cast<std::string>(IDLE1) << " x " << static_cast<std::string>(one)
+					  << " -> " << static_cast<std::string>(IDLE2) << std::endl;
+			SET_NEXT_STATE(IDLE2);
 		}
-		else if (port == two)
+		else if (port == two && CUR_STATE == IDLE1)
 		{
-			std::cout << "two" << std::endl;
+			std::cout << static_cast<std::string>(IDLE1) << " x " << static_cast<std::string>(two)
+				<< " -> " << static_cast<std::string>(IDLE2) << std::endl;
+			SET_NEXT_STATE(IDLE2);
 		}
-		else if (port == three)
+		else 
 		{
-			std::cout << "three" << std::endl;
+			std::cout << "return to IDLE1" << std::endl;
+			SET_NEXT_STATE(IDLE1);
 		}
 	};
 	virtual void internal_transition()
 	{
-		std::cout << std::string(cur_state) << std::endl;
-		if(cur_state == IDLE1)
+		if(CUR_STATE == IDLE1)
 		{
-			cur_state = IDLE2;
+			CUR_STATE = IDLE2;
 		}
 		else
 		{
-			cur_state = IDLE1;
+			CUR_STATE = IDLE1;
 		}
-		std::cout << std::string(cur_state) << std::endl;
 	};
 	virtual void output_function(evsim::SystemMessage& msg) {};
 public:
 	DECLARE_STATE(IDLE1, evsim::Infinity);
 	DECLARE_STATE(IDLE2, evsim::Infinity);
+
 
 	DECLARE_INPUT_PORT(one);
 	DECLARE_INPUT_PORT(two);

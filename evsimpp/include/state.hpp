@@ -36,3 +36,8 @@ public: State_##X(): evsim::State(#X, Y) { }\
 
 #define REGISTER_STATE(X) \
     register_state(X.m_hash, X.m_name, X.m_deadline)
+
+#define SET_INIT_STATE(X) p_cur_state = &X
+#define SET_NEXT_STATE(X) p_cur_state = &X
+
+#define CUR_STATE *p_cur_state

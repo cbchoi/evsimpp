@@ -5,7 +5,7 @@
 namespace evsim
 {
 	CAtomic::CAtomic(std::string name)
-		:CModel(ATOMIC_TYPE, name)
+		:CModel(ATOMIC_TYPE, name), p_cur_state(nullptr)
 	{
 		
 	}
