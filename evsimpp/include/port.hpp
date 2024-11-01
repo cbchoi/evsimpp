@@ -13,6 +13,7 @@ namespace evsim
     public:
         operator unsigned long() const;
         operator std::string() const;
+        virtual bool operator==(const Port& rhs) const { return false; };
         void hash(const std::string& str);
     public:
         std::string m_name;
