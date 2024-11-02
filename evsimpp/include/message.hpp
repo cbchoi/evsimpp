@@ -2,9 +2,10 @@
 
 namespace evsim
 {
-	class SystemMessage
+	class Message
 	{
 	public:
-		SystemMessage() {}
+		Message() = default;
+		
 	};
 }

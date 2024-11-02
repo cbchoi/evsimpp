@@ -10,17 +10,13 @@ namespace evsim {
 	class CAtomicExecutor:public IExecutor
 	{
 	public:
-		CAtomicExecutor(
-			Time itime,
-			Time dtime,
-			StringInfo ename,
-			CAtomicModel* pbehavior);
+		CAtomicExecutor(CModel* pbehavior);
 
 
 	public:
-		virtual void external_transition(const Port& port, const SystemMessage& msg);
+		virtual void external_transition(const Port& port, const MessageDelivery& msg);
 		virtual void internal_transition();
-		virtual void output_function(SystemMessage& msg);
+		virtual void output_function(MessageDelivery& msg);
 		virtual Time time_advance();
 	public:
 		void set_req_time(Time global_time);

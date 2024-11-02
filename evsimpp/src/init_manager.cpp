@@ -18,14 +18,14 @@ InitManager::InitManager(std::string path)
 			agElem->QueryDoubleAttribute("x", &x);
 			agElem->QueryDoubleAttribute("y", &y);
 
-			CAgent* ag = new CAgent(x, y, 0, 1, 0);
-			m_agentList.push_back(ag);
+			//CAgent* ag = new CAgent(x, y, 0, 1, 0);
+			//m_agentList.push_back(ag);
 		}
 	}
 }
 
-std::vector<CAgent*>& InitManager::get_agent_list()
-{
-	return m_agentList;
-}
+//std::vector<CAgent*>& InitManager::get_agent_list()
+//{
+//	return m_agentList;
+//}
 }

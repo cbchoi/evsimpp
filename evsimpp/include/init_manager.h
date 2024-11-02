@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <string>
-#include "agent.hpp"
+//#include "agent.hpp"
 #include "tinyxml2.h"
 
 namespace evsim{
@@ -13,10 +13,10 @@ public:
 
     InitManager(std::string path);
 
-    std::vector<CAgent*>& get_agent_list();
+    //std::vector<CAgent*>& get_agent_list();
 
 private:
     tinyxml2::XMLDocument doc;
-    std::vector<CAgent*> m_agentList;
+    //std::vector<CAgent*> m_agentList;
 };
 }

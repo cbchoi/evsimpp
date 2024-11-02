@@ -8,13 +8,14 @@ CManeuverManager::CManeuverManager()
 
 CManeuverManager::~CManeuverManager()
 {
+    /*
     for(std::vector<CAgent*>::iterator iter = m_publish_list.begin();
         iter != m_publish_list.end(); ++iter)
         {
             delete *iter;
-        }
+        }*/
 }
-
+#if 0
 void CManeuverManager::register_publisher(CAgent* p_agent)
 {
     m_publish_list.push_back(p_agent);
@@ -86,5 +87,5 @@ void CManeuverManager::svc(double time)
             }
         }
 }
-
+#endif
 }

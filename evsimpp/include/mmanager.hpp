@@ -1,5 +1,5 @@
 #pragma once
-#include "agent.hpp"
+//#include "agent.hpp"
 
 #include <vector>
 
@@ -10,6 +10,7 @@ public:
     CManeuverManager();
     virtual ~CManeuverManager();
 
+#if 0
 public:
     void register_publisher(CAgent* p_agent);
     void unregister_publisher(CAgent* p_agent);
@@ -22,6 +23,7 @@ public:
 private:
     std::vector<CAgent*> m_publish_list;
     std::vector<CAgent*> m_subscriber_list;
+#endif
 };
 
 }

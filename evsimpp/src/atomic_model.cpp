@@ -5,7 +5,7 @@
 namespace evsim
 {
 	CAtomicModel::CAtomicModel(std::string name)
-		:CModel(ATOMIC_TYPE, name), p_cur_state(nullptr)
+		:CModel(ATOMIC_TYPE, name), p_cur_state(nullptr), m_cancel_reschedule_f(false)
 	{
 		
 	}
@@ -16,7 +16,9 @@ namespace evsim
 	}
 
 	CAtomicModel::CAtomicModel(const CAtomicModel& rhs)
-		:CModel(ATOMIC_TYPE, rhs.get_name())
+		:CModel(ATOMIC_TYPE, rhs.get_name()),
+		 p_cur_state(rhs.p_cur_state),
+		 m_cancel_reschedule_f(rhs.m_cancel_reschedule_f)
 	{
 		m_states = rhs.m_states;
 	}
@@ -36,12 +38,17 @@ namespace evsim
 		 return m_states; 
 	}
 
-	bool CAtomicModel::is_reschedule()
+	Time CAtomicModel::get_first_event_time()
 	{
-		return !m_cancel_reschedule_f;
+		return time_advance();
 	}
 
-	void CAtomicModel::set_reschedule(bool sw)
+	bool CAtomicModel::is_cancel_reschedule() const
+	{
+		return m_cancel_reschedule_f;
+	}
+
+	void CAtomicModel::set_cancel_reschedule(bool sw)
 	{
 		m_cancel_reschedule_f = sw;
 	}

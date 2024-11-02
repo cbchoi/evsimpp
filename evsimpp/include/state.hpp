@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <string>
 #include "definition.hpp"
 #include "string_info.hpp"

@@ -14,14 +14,14 @@ FetchContent_MakeAvailable(googletest)
 
 
 # Library Configuration
-link_directories(lib)
+#link_directories(lib)
 
 #link_directories(../lib)
 include_directories(./include)
 
 set(UNIT_TEST ${PROJECT_NAME}_tests)
 
-add_executable(${UNIT_TEST} src/evsimpp.cpp "src/dummy_atomic.cpp")
+add_executable(${UNIT_TEST} src/evsimpp.cpp )
 
 target_compile_features(${UNIT_TEST} PRIVATE cxx_std_20)
 
@@ -36,7 +36,7 @@ set(TEST_COMMAND_LINE_OPTIONS ${CMAKE_CTEST_COMMAND} -C $<CONFIGURATION> -R "^${
 ## Compiler Options
 if(MSVC)
     message("MSVC")
-    target_link_libraries(${UNIT_TEST} PRIVATE lib/evsimpp) # libbar.so is found in ${CMAKE_SOURCE_DIR}/lib
+    target_link_libraries(${UNIT_TEST} PUBLIC evsimpp) # libbar.so is found in ${CMAKE_SOURCE_DIR}/lib
     include_directories(../evsimpp/include)
     target_compile_options(${UNIT_TEST}
     PUBLIC

@@ -4,7 +4,14 @@ namespace evsim
 {
 	UNIQ CModel::OBJECT_ID = 0;
 
-	CModel::CModel(UNIQ _type, std::string name) :CObject(++OBJECT_ID, MODEL_TYPE | _type), m_model_name(name) 
+	CModel::CModel(UNIQ _type, 
+	               std::string name, 
+	               Time itime, Time dtime, std::string ename)
+	:CObject(++OBJECT_ID, MODEL_TYPE | _type),
+			 m_model_name(name),
+			instantiation_t(itime),
+			destruction_t(dtime),
+			engine_name(ename)
 	{
 	}
 

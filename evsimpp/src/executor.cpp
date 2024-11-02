@@ -2,14 +2,13 @@
 
 namespace evsim
 {
-	Executor::Executor(Time itime, Time dtime, std::string ename) :instantiation_time(itime),
-		destruction_time(dtime),
-		engine_name(ename)
+	IExecutor::IExecutor()
+	:global_t(0)
 	{
 
 	}
 
-	inline void Executor::set_global_time(Time _time)
+	void IExecutor::set_global_time(Time _time)
 	{
 		global_t = _time;
 	}

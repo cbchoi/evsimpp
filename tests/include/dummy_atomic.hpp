@@ -7,16 +7,27 @@
 #include "definition.hpp"
 #include "state.hpp"
 #include "port.hpp"
-#include "system_message.hpp"
+#include "message_delivery.hpp"
 
 using namespace evsim;
 
 class CDummyAtomic :public CAtomicModel
 {
 public:
-	CDummyAtomic(std::string name);
+	CDummyAtomic(std::string name) :evsim::CAtomicModel(name)
+	{
+		REGISTER_INPUT_PORT(one);
+		REGISTER_INPUT_PORT(two);
+		REGISTER_INPUT_PORT(three);
 
-	virtual void external_transition(const Port& port, const SystemMessage& msg)
+		REGISTER_STATE(IDLE1);
+		REGISTER_STATE(IDLE2);
+
+		SET_INIT_STATE(IDLE1);
+	}
+
+
+	virtual void external_transition(const Port& port, const MessageDelivery& msg_delivery)
 	{
 		if(port == one && CUR_STATE == IDLE1)
 		{
@@ -43,15 +54,19 @@ public:
 		{
 			CUR_STATE = IDLE2;
 		}
-		else
+		else if(CUR_STATE == IDLE3)
 		{
-			CUR_STATE = IDLE1;
+			CUR_STATE = IDLE3;
 		}
 	};
-	virtual void output_function(evsim::SystemMessage& msg) {};
+	virtual void output_function(evsim::MessageDelivery& msg)
+	{
+		std::cout << "Hello" << std::endl;
+	};
 public:
-	DECLARE_STATE(IDLE1, evsim::Infinity);
+	DECLARE_STATE(IDLE1, 1);
 	DECLARE_STATE(IDLE2, evsim::Infinity);
+	DECLARE_STATE(IDLE3, 1);
 
 
 	DECLARE_INPUT_PORT(one);

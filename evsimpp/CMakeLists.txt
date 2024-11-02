@@ -5,6 +5,7 @@ message("Configuring evsim++")
 
 # Library Configuration
 #link_directories(lib)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Source Code Configuration
 include_directories(include)
@@ -22,16 +23,16 @@ message("Source Files : ${SRCS}")
 ## Compiler Options
 if(MSVC)
 # Compile & Linking Configuration
-    add_library(evsimpp STATIC ${SRCS})
+    add_library(evsimpp SHARED ${SRCS})
     target_include_directories(evsimpp PUBLIC  include)
-    target_link_libraries(evsimpp PUBLIC lib)
+    #target_link_libraries(evsimpp PUBLIC lib)
 
     #target_compile_options(evsimpp 
     #PUBLIC
     #    /std:c++latest  # Define options that MSVC may identify 
     #)
 else() # Clang + GCC
-    add_library(evsimpp STATIC ${SRCS})
+    add_library(evsimpp SHARED ${SRCS})
     target_include_directories(evsimpp PUBLIC include)
     #target_link_libraries(${PROJECT_NAME} PUBLIC lib)
 

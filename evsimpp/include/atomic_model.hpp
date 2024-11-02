@@ -4,7 +4,7 @@
 
 #include "model.hpp"
 #include "state.hpp"
-#include "system_message.hpp"
+#include "message_delivery.hpp"
 
 namespace evsim{
 
@@ -16,18 +16,20 @@ public:
 	virtual ~CAtomicModel();
 
 public:
-	virtual void external_transition(const Port& port, const SystemMessage& msg){};
+	virtual void external_transition(const Port& port, const MessageDelivery& msg){};
 	virtual void internal_transition(){};
-	virtual void output_function(SystemMessage& msg){};
-	virtual Time time_advance();;
+	virtual void output_function(MessageDelivery& msg){};
+	virtual Time time_advance();
 
 public: // Utility Functions
 	void register_state(State state); 
 	const std::set<State>& states() const;
 	State& get_current_state() const { return *p_cur_state; }
+	void set_current_state(State* state) { p_cur_state = state; }
 
-	bool is_reschedule();
-	void set_reschedule(bool sw);
+	Time get_first_event_time() override;
+	bool is_cancel_reschedule() const;
+	void set_cancel_reschedule(bool sw);
 
 protected:
 	std::set<State> m_states;

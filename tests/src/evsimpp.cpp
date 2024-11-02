@@ -1,5 +1,7 @@
 #include "gtest/gtest.h"
+#include "libevsimpp.hpp"
 #include "test_atomic.hpp"
+#include "test_sim_algorithm.hpp"
 
 using namespace evsim;
 
