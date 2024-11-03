@@ -49,6 +49,6 @@ else() # Clang + GCC
         -std=c++2a -Wall    # Define options that GCC/Clang may identify
     PRIVATE
         -fPIC 
-        -fno-rtti 
+        #-fno-rtti 
     )
 endif()
