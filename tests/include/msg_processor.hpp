@@ -25,7 +25,7 @@ public:
 	{
 		if(port == input)
 		{
-			std::cout << "!!" << std::endl;
+			elem_count++;
 		}
 	}
 
@@ -40,7 +40,7 @@ public:
 
 	virtual void output_function(evsim::MessageDeliverer& msg)
 	{
-		elem_count++;
+		
 	};
 
 public:

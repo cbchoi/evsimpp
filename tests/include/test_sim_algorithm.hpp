@@ -92,4 +92,33 @@ namespace evsim {
 
         se->simulate(10);
     }
+
+    TEST_F(SimAlgorithm, output_handling)
+    {
+        CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
+
+        CPEG* pPEG = new CPEG("dummy1|");
+        se->register_entity(pPEG, 0, Infinity);
+        State state1("IDLE3", 1);
+        pPEG->set_current_state(&state1);
+
+        CProcessor* pProc1 = new CProcessor("proc");
+        se->register_entity(pProc1, 0, Infinity);
+
+        CProcessor* pProc2 = new CProcessor("proc");
+        se->register_entity(pProc2, 0, Infinity);
+
+        CProcessor* pProc3 = new CProcessor("proc");
+        se->register_entity(pProc3, 0, Infinity);
+
+        se->insert_coupling(pPEG, pPEG->output, pProc1, pProc1->input);
+        se->insert_coupling(pPEG, pPEG->output, pProc2, pProc2->input);
+        se->insert_coupling(pPEG, pPEG->output, pProc3, pProc3->input);
+
+        se->simulate(10);
+
+        EXPECT_EQ(pProc1->elem_count, 10);
+        EXPECT_EQ(pProc2->elem_count, 10);
+        EXPECT_EQ(pProc3->elem_count, 10);
+    }
 }

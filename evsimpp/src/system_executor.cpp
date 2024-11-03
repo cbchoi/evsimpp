@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iostream>
 #include <cassert>
+#include "uncaught_handler.hpp"
 
 namespace evsim
 {
@@ -40,7 +41,7 @@ namespace evsim
 					CModel* pModel = iter->p_model;
 					m_live_model_list.insert(destory_constraint(d_time, pModel));
 					IExecutor* executor = m_config.ef->create_entity(pModel);
-					//executor->set_global_time(m_global_t);
+					
 					executor->set_req_time(m_global_t);
 					executor_item ei(pModel->get_first_event_time(), executor);
 					m_schedule_list.insert(ei);
@@ -62,19 +63,23 @@ namespace evsim
 		for( Message msg : msg_deliver.get_contents())
 		{
 			coupling_relation cr(msg.get_source(), msg.get_out_port());
-			std::map<coupling_relation, coupling_relation>::iterator iter = m_coupling_map.find(cr);
+			std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.find(cr);
 			if (iter != m_coupling_map.end())
 			{
 				// external output coupling handling
 				//if destination[0] is self :
 				//self.output_event_queue.append((self.global_time, msg[1].retrieve()))
 				// internal coupling handling
-				std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(iter->second.model);
-				if(dst != m_model_executor_map.end())
+				for(coupling_relation cr : iter->second)
 				{
-					dst->second->external_transition(*iter->second.port, msg_deliver);
-					dst->second->set_req_time(m_global_t);
+					std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(cr.model);
+					if (dst != m_model_executor_map.end())
+					{
+						dst->second->external_transition(*cr.port, msg_deliver);
+						dst->second->set_req_time(m_global_t);
+					}
 				}
+				
 			}
 			else
 			{
@@ -91,7 +96,10 @@ namespace evsim
 	{
 		coupling_relation src(p_src, &src_port);
 		coupling_relation dst(p_dst, &dst_port);
-		m_coupling_map.insert(std::make_pair(src, dst));
+
+		if (m_coupling_map.find(src) == m_coupling_map.end())
+			m_coupling_map[src] = std::vector<coupling_relation>();
+		m_coupling_map[src].push_back(dst);
 	}
 
 	void CSystemExecutor::sim_set_up()

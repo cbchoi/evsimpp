@@ -49,7 +49,7 @@ protected:
 	std::multiset<destory_constraint>	m_live_model_list;
 	std::map<CModel*, IExecutor*>		m_model_executor_map;
 
-	std::map<coupling_relation, coupling_relation> m_coupling_map;
+	std::map<coupling_relation, std::vector<coupling_relation>> m_coupling_map;
 };
 
 }
