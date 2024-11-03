@@ -2,6 +2,7 @@
 
 #include "atomic_model.hpp"
 #include "executor.hpp"
+#include "message_deliverer.hpp"
 #include "string_info.hpp"
 #include "state.hpp"
 
@@ -14,9 +15,9 @@ namespace evsim {
 
 
 	public:
-		virtual void external_transition(const Port& port, const MessageDelivery& msg);
+		virtual void external_transition(const Port& port, const MessageDeliverer& msg);
 		virtual void internal_transition();
-		virtual void output_function(MessageDelivery& msg);
+		virtual void output_function(MessageDeliverer& msg);
 		virtual Time time_advance();
 	public:
 		void set_req_time(Time global_time);

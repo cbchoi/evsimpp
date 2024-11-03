@@ -32,6 +32,7 @@ public:
 	Time simulate(Time t);
 protected:
 	void create_entity();
+	void output_handling(MessageDeliverer& msg_deliver);
 protected:
 	SimConfig m_config;
 	static UNIQ OBJECT_ID;
@@ -45,7 +46,8 @@ protected:
 
 	std::multiset<executor_item>		m_schedule_list;
 	std::multiset<create_constraint>	m_wait_object_list;
-	std::multiset<destory_constraint>	m_active_model_list;
+	std::multiset<destory_constraint>	m_live_model_list;
+	std::map<CModel*, IExecutor*>		m_model_executor_map;
 
 	std::map<coupling_relation, coupling_relation> m_coupling_map;
 };

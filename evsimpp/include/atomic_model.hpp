@@ -4,7 +4,7 @@
 
 #include "model.hpp"
 #include "state.hpp"
-#include "message_delivery.hpp"
+#include "message_deliverer.hpp"
 
 namespace evsim{
 
@@ -16,9 +16,9 @@ public:
 	virtual ~CAtomicModel();
 
 public:
-	virtual void external_transition(const Port& port, const MessageDelivery& msg){};
+	virtual void external_transition(const Port& port, const MessageDeliverer& msg){};
 	virtual void internal_transition(){};
-	virtual void output_function(MessageDelivery& msg){};
+	virtual void output_function(MessageDeliverer& msg){};
 	virtual Time time_advance();
 
 public: // Utility Functions

@@ -7,7 +7,7 @@
 #include "definition.hpp"
 #include "state.hpp"
 #include "port.hpp"
-//#include "message_delivery.hpp"
+//#include "message_deliverer.hpp"
 
 using namespace evsim;
 
@@ -21,9 +21,12 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	virtual void external_transition(const Port& port, const MessageDelivery& msg)
+	virtual void external_transition(const Port& port, const MessageDeliverer& msg)
 	{
-
+		if(port == input)
+		{
+			std::cout << "!!" << std::endl;
+		}
 	}
 
 	virtual void internal_transition()
@@ -35,7 +38,7 @@ public:
 		//}
 	};
 
-	virtual void output_function(evsim::MessageDelivery& msg)
+	virtual void output_function(evsim::MessageDeliverer& msg)
 	{
 		elem_count++;
 	};

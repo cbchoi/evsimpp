@@ -38,13 +38,13 @@ namespace evsim
 				{
 					Time d_time = iter->destory_t;
 					CModel* pModel = iter->p_model;
-					m_active_model_list.insert(destory_constraint(d_time, pModel));
+					m_live_model_list.insert(destory_constraint(d_time, pModel));
 					IExecutor* executor = m_config.ef->create_entity(pModel);
 					//executor->set_global_time(m_global_t);
 					executor->set_req_time(m_global_t);
 					executor_item ei(pModel->get_first_event_time(), executor);
 					m_schedule_list.insert(ei);
-
+					m_model_executor_map.insert(std::make_pair(pModel, executor));
 					del_list.push_back(iter);
 				}
 			}
@@ -53,6 +53,32 @@ namespace evsim
 				iter != del_list.end(); ++iter)
 			{
 				m_wait_object_list.erase(*iter);
+			}
+		}
+	}
+
+	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
+	{
+		for( Message msg : msg_deliver.get_contents())
+		{
+			coupling_relation cr(msg.get_source(), msg.get_out_port());
+			std::map<coupling_relation, coupling_relation>::iterator iter = m_coupling_map.find(cr);
+			if (iter != m_coupling_map.end())
+			{
+				// external output coupling handling
+				//if destination[0] is self :
+				//self.output_event_queue.append((self.global_time, msg[1].retrieve()))
+				// internal coupling handling
+				std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(iter->second.model);
+				if(dst != m_model_executor_map.end())
+				{
+					dst->second->external_transition(*iter->second.port, msg_deliver);
+					dst->second->set_req_time(m_global_t);
+				}
+			}
+			else
+			{
+				// msg uncaught execption
 			}
 		}
 	}
@@ -97,13 +123,13 @@ namespace evsim
 		m_schedule_list.erase(m_schedule_list.begin());
 
 		// Main processing loop
-		MessageDelivery sys_msg;
+		MessageDeliverer msg_deliverer;
  		while (ei.next_event_t <= m_global_t) {
 			
-			ei.p_executor->output_function(sys_msg);
-			//if (sys_msg.has_value()) {
-			//	output_handling(tuple_obj, std::make_pair(global_time, msg.value()));
-			//}
+			ei.p_executor->output_function(msg_deliverer);
+			if (msg_deliverer.has_contents()) {
+				output_handling(msg_deliverer);
+			}
 			
 			ei.p_executor->internal_transition();
 			//Time prev_req_time = ei.p_executor->get_req_time();

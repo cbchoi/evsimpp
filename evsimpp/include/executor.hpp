@@ -1,7 +1,7 @@
 #pragma once
 
 #include "definition.hpp"
-#include "message_delivery.hpp"
+#include "message_deliverer.hpp"
 #include <string>
 #include "port.hpp"
 namespace evsim {
@@ -12,9 +12,9 @@ public:
 	IExecutor();
 
 public:
-    virtual void external_transition(const Port& port, const MessageDelivery& msg) = 0;
+    virtual void external_transition(const Port& port, const MessageDeliverer& msg) = 0;
     virtual void internal_transition() = 0;
-    virtual void output_function(MessageDelivery& msg) = 0;
+    virtual void output_function(MessageDeliverer& msg) = 0;
     virtual Time time_advance() = 0;
 
 public:
