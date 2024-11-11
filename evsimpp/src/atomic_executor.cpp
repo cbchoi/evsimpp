@@ -10,7 +10,7 @@ namespace evsim {
 		next_event_t = request_t = behavior_object->get_first_event_time();
 	}
 
-	void CAtomicExecutor::external_transition(const Port& port, const MessageDeliverer& msg)
+	void CAtomicExecutor::external_transition(const Port& port, MessageDeliverer& msg)
 	{
 		behavior_object->external_transition(port, msg);
 	}

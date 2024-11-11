@@ -19,9 +19,9 @@ namespace evsim
 		}
 
 
-		virtual void external_transition(const Port& port, const MessageDeliverer& msg_delivery)
+		virtual void external_transition(const Port& port, MessageDeliverer& msg_delivery)
 		{
-			std::vector<Message> messages = std::msg_delivery.get_contents();
+			std::vector<Message>& messages = msg_delivery.get_contents();
 			for (Message msg : messages)
 			{
 				std::cout << "Uncaught Message:" 

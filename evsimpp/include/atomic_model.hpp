@@ -16,9 +16,9 @@ public:
 	virtual ~CAtomicModel();
 
 public:
-	virtual void external_transition(const Port& port, const MessageDeliverer& msg){};
-	virtual void internal_transition(){};
-	virtual void output_function(MessageDeliverer& msg){};
+	virtual void external_transition(const Port& port, MessageDeliverer& msg) = 0;
+	virtual void internal_transition() = 0;
+	virtual void output_function(MessageDeliverer& msg) = 0;
 	virtual Time time_advance();
 
 public: // Utility Functions

@@ -7,6 +7,10 @@
 #include <cassert>
 #include "uncaught_handler.hpp"
 
+#ifdef EV_DBG
+#define _DBG_MODEL_EXECUTOR_
+#define _DBG_COUPLING_
+#endif
 namespace evsim
 {
 	UNIQ CSystemExecutor::OBJECT_ID = 0;
@@ -62,8 +66,45 @@ namespace evsim
 	{
 		for( Message msg : msg_deliver.get_contents())
 		{
-			coupling_relation cr(msg.get_source(), msg.get_out_port());
+			coupling_relation cr(msg.get_source(), msg.get_out_port ());
+			
+			#ifdef _DBG_MODEL_EXECUTOR_
+			std::cout << "Message:";
+			std::cout << msg.get_source() << ":" << msg.get_out_port () << std::endl;
+			std::cout << "---m_model_executor_map---" << std::endl;
+			for(std::map<CModel*, IExecutor*>::iterator iter = m_model_executor_map.begin();
+				iter != m_model_executor_map.end(); ++iter)
+				{
+					
+					std::cout << "model|executor : " << iter->first->get_name() << "("
+											   << iter->first << "):"
+											   << iter->second << std::endl;
+				}
+				std::cout << "---" << std::endl;
+			#endif
 			std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.find(cr);
+			
+			#ifdef _DBG_COUPLING_
+			std::cout << "====m_coupling_map====" << std::endl;
+			for(std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.begin();
+				iter != m_coupling_map.end(); ++iter)
+				{
+					
+					std::cout << "(src,dest) : " << iter->first.model->get_name()
+												 << "(" << iter->first.model;
+					std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
+					for(coupling_relation cr: iter->second)
+					{
+						std::cout << "\t";
+						std::cout << cr.model->get_name()
+												 << "(" << cr.model;
+						std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
+						std::cout << std::endl;
+					}
+					
+				}
+				std::cout << "====" << std::endl;
+			#endif
 			if (iter != m_coupling_map.end())
 			{
 				// external output coupling handling
@@ -83,6 +124,10 @@ namespace evsim
 			}
 			else
 			{
+				#ifdef _DBG_UNCAUGHT_
+				std::cout << msg.get_source()->get_name() << ":" << msg.get_out_port()->m_name << std::endl;
+				std::cout << "msg uncaught" << std::endl;
+				#endif
 				// msg uncaught execption
 			}
 		}

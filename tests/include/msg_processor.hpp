@@ -21,7 +21,7 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	virtual void external_transition(const Port& port, const MessageDeliverer& msg)
+	virtual void external_transition(const Port& port, MessageDeliverer& msg)
 	{
 		if(port == input)
 		{
