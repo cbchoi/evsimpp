@@ -27,7 +27,7 @@ public: // Utility Functions
 	State& get_current_state() const { return *p_cur_state; }
 	void set_current_state(State* state) { p_cur_state = state; }
 
-	Time get_first_event_time() override;
+	//Time get_first_event_time() override;
 	bool is_cancel_reschedule() const;
 	void set_cancel_reschedule(bool sw);
 

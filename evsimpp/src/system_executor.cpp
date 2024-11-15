@@ -15,16 +15,16 @@ namespace evsim
 {
 	UNIQ CSystemExecutor::OBJECT_ID = 0;
 
-	CSystemExecutor::CSystemExecutor(SimConfig config)
-	:CObject(CSystemExecutor::OBJECT_ID++, ENGINE_TYPE), m_global_t(0), m_config(config)
+	CSystemExecutor::CSystemExecutor(std::string _name, SimConfig config)
+	:CModel(ENGINE_TYPE, _name), m_global_t(0), m_config(config)
 	{
 		m_engine_status = SIMULATION_WAIT;
 		m_execution_mode = BLOCKING;
 		m_simulation_mode = REAL;
 	}
 
-	CSystemExecutor* CSystemExecutor::create_system_executor(SimConfig config)
-	{ return new CSystemExecutor(config); }
+	CSystemExecutor* CSystemExecutor::create_system_executor(SimConfig config, std::string _name)
+	{ return new CSystemExecutor(_name, config); }
 
 	void CSystemExecutor::register_entity(CModel* model, Time itime, Time dtime)
 	{
@@ -47,7 +47,7 @@ namespace evsim
 					IExecutor* executor = m_config.ef->create_entity(pModel);
 					
 					executor->set_req_time(m_global_t);
-					executor_item ei(pModel->get_first_event_time(), executor);
+					executor_item ei(executor->time_advance(), executor);
 					m_schedule_list.insert(ei);
 					m_model_executor_map.insert(std::make_pair(pModel, executor));
 					del_list.push_back(iter);
@@ -64,7 +64,7 @@ namespace evsim
 
 	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
 	{
-		for( Message msg : msg_deliver.get_contents())
+		for(const Message& msg : msg_deliver.get_contents())
 		{
 			coupling_relation cr(msg.get_source(), msg.get_out_port ());
 			
@@ -106,13 +106,17 @@ namespace evsim
 				std::cout << "====" << std::endl;
 			#endif
 			if (iter != m_coupling_map.end())
-			{
-				// external output coupling handling
-				//if destination[0] is self :
-				//self.output_event_queue.append((self.global_time, msg[1].retrieve()))
-				// internal coupling handling
+			{	
 				for(coupling_relation cr : iter->second)
 				{
+					// External Output Coupling Handling
+					if (cr.model == this)
+					{
+
+					}
+						//self.output_event_queue.append((self.global_time, msg[1].retrieve()))
+
+					// internal coupling handling
 					std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(cr.model);
 					if (dst != m_model_executor_map.end())
 					{

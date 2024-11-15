@@ -7,7 +7,7 @@ namespace evsim {
 		CModel* pbehavior)
 	{
 		behavior_object = dynamic_cast<CAtomicModel*>(pbehavior);
-		next_event_t = request_t = behavior_object->get_first_event_time();
+		next_event_t = request_t = behavior_object->time_advance();
 	}
 
 	void CAtomicExecutor::external_transition(const Port& port, MessageDeliverer& msg)

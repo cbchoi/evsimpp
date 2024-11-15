@@ -11,13 +11,13 @@
 
 namespace evsim{
 
-class CSystemExecutor: public CObject
+class CSystemExecutor: public CModel
 {
 private:
-	CSystemExecutor(SimConfig config);
+	CSystemExecutor(std::string _name, SimConfig config);
 
 public:
-	static CSystemExecutor* create_system_executor(SimConfig config);
+	static CSystemExecutor* create_system_executor(SimConfig config, std::string _name = "default");
 
 public:
 	void register_entity(CModel* model, Time itime, Time dtime);

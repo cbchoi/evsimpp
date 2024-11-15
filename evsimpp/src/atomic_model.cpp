@@ -38,10 +38,10 @@ namespace evsim
 		 return m_states; 
 	}
 
-	Time CAtomicModel::get_first_event_time()
-	{
-		return time_advance();
-	}
+	//Time CAtomicModel::get_first_event_time()
+	//{
+	//	return time_advance();
+	//}
 
 	bool CAtomicModel::is_cancel_reschedule() const
 	{
