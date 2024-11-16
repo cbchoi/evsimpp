@@ -23,8 +23,45 @@ namespace evsim
 		m_simulation_mode = REAL;
 	}
 
+	CSystemExecutor::~CSystemExecutor()
+	{
+		m_schedule_list.clear();
+		m_wait_object_list.clear();
+		m_live_model_list.clear();
+		m_model_executor_map.clear();
+
+		m_coupling_map.clear();
+
+		m_external_input_ports.clear();
+		m_external_output_ports.clear();
+	}
+
 	CSystemExecutor* CSystemExecutor::create_system_executor(SimConfig config, std::string _name)
 	{ return new CSystemExecutor(_name, config); }
+
+	Port& CSystemExecutor::create_input_port(std::string name)
+	{
+		std::shared_ptr<Port> port = std::make_shared <Port>(name);
+		m_external_input_ports[name] = port;
+		return *port;
+	}
+
+	Port& CSystemExecutor::get_input_port(std::string name)
+	{
+		return *m_external_input_ports[name];
+	}
+
+	Port& CSystemExecutor::create_output_port(std::string name)
+	{
+		std::shared_ptr<Port> port = std::make_shared <Port>(name);
+		m_external_output_ports[name] = port;
+		return *port;
+	}
+
+	Port& CSystemExecutor::get_output_port(std::string name)
+	{
+		return *m_external_output_ports[name];
+	}
 
 	void CSystemExecutor::register_entity(CModel* model, Time itime, Time dtime)
 	{
@@ -114,14 +151,19 @@ namespace evsim
 					{
 
 					}
-						//self.output_event_queue.append((self.global_time, msg[1].retrieve()))
-
-					// internal coupling handling
-					std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(cr.model);
-					if (dst != m_model_executor_map.end())
+					else
 					{
-						dst->second->external_transition(*cr.port, msg_deliver);
-						dst->second->set_req_time(m_global_t);
+						// internal coupling handling
+						std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(cr.model);
+						if (dst != m_model_executor_map.end())
+						{
+							m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
+
+							dst->second->external_transition(*cr.port, msg_deliver);
+							dst->second->set_req_time(m_global_t);
+
+							m_schedule_list.insert(executor_item(dst->second->get_req_time(), dst->second));
+						}
 					}
 				}
 				
@@ -133,6 +175,21 @@ namespace evsim
 				std::cout << "msg uncaught" << std::endl;
 				#endif
 				// msg uncaught execption
+			}
+		}
+	}
+
+	void CSystemExecutor::event_delivery_handling(MessageDeliverer& deliver)
+	{
+		while (deliver.has_contents()) {
+			if (deliver.get_first_event_time() <= m_global_t)
+			{
+				Message msg = *deliver.get_contents().begin();
+				output_handling(deliver);
+				deliver.get_contents().erase(deliver.get_contents().begin());
+			}else
+			{
+				break;
 			}
 		}
 	}
@@ -149,6 +206,17 @@ namespace evsim
 		if (m_coupling_map.find(src) == m_coupling_map.end())
 			m_coupling_map[src] = std::vector<coupling_relation>();
 		m_coupling_map[src].push_back(dst);
+	}
+
+	void CSystemExecutor::insert_external_event(Message msg)
+	{
+		m_external_input_event.insert_message(msg);
+	}
+
+	Message& CSystemExecutor::create_message(Port& port, Time _time)
+	{
+		Message* pMessage = new Message(this, port, _time);
+		return *pMessage;
 	}
 
 	void CSystemExecutor::sim_set_up()
@@ -179,14 +247,14 @@ namespace evsim
 
 		m_schedule_list.erase(m_schedule_list.begin());
 
+		event_delivery_handling(m_external_input_event);
+
 		// Main processing loop
 		MessageDeliverer msg_deliverer;
  		while (ei.next_event_t <= m_global_t) {
 			
 			ei.p_executor->output_function(msg_deliverer);
-			if (msg_deliverer.has_contents()) {
-				output_handling(msg_deliverer);
-			}
+			event_delivery_handling(msg_deliverer);
 			
 			ei.p_executor->internal_transition();
 			//Time prev_req_time = ei.p_executor->get_req_time();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "message.hpp"
-#include <vector>
+#include "definition.hpp"
 
 namespace evsim
 {
@@ -9,12 +9,17 @@ namespace evsim
 	{
 	public:
 		MessageDeliverer() {}
+		virtual ~MessageDeliverer();
 
-		void insert_message(Message msg);
+		void insert_message(Message& msg);
 		bool has_contents() const { return !m_data_list.empty(); }
-		std::vector<Message>& get_contents() { return m_data_list; }
+		std::multiset<Message>& get_contents() { return m_data_list; }
+		Time get_first_event_time() const
+		{
+			return m_data_list.empty() ? Infinity : m_data_list.begin()->get_scheduled_time();
+		}
 
 	private:
-		std::vector<Message> m_data_list;
+		std::multiset<Message> m_data_list;
 	};
 }

@@ -1,7 +1,9 @@
 #include "system_executor.hpp"
-#include "periodic_event_generator.hpp"
-#include "msg_processor.hpp"
+#include "model_periodic_event_generator.hpp"
+#include "model_msg_processor.hpp"
+#include "model_wait_and_go.hpp"
 
+#include "message.hpp"
 #include "sim_config.hpp"
 #include "executor_factory.hpp"
 #include "gtest/gtest.h"
@@ -120,5 +122,39 @@ namespace evsim {
         EXPECT_EQ(pProc1->elem_count, 10);
         EXPECT_EQ(pProc2->elem_count, 10);
         EXPECT_EQ(pProc3->elem_count, 10);
+    }
+
+    TEST_F(SimAlgorithm, external_input_handling)
+    {
+        CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
+        Port& inport = se->create_input_port("engine_input");
+        se->register_input_port(inport);
+
+        CWaitGEN* pWaitGen = new CWaitGEN("proc");
+        se->register_entity(pWaitGen, 0, Infinity);
+        se->insert_coupling(se, inport, pWaitGen, pWaitGen->input);
+
+        Message msg = se->create_message(inport);
+        se->insert_external_event(msg);
+
+        se->simulate(10);
+        EXPECT_EQ(pWaitGen->elem_count, 10);
+    }
+
+    TEST_F(SimAlgorithm, external_input_scedule_handling)
+    {
+        CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
+        Port& inport = se->create_input_port("engine_input");
+        se->register_input_port(inport);
+
+        CWaitGEN* pWaitGen = new CWaitGEN("proc");
+        se->register_entity(pWaitGen, 0, Infinity);
+        se->insert_coupling(se, inport, pWaitGen, pWaitGen->input);
+
+        Message msg = se->create_message(inport, 5);
+        se->insert_external_event(msg);
+
+        se->simulate(10);
+        EXPECT_EQ(pWaitGen->elem_count, 5);
     }
 }
