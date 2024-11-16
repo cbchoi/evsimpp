@@ -6,8 +6,10 @@
 
 #include "object.hpp"
 #include "port.hpp"
+#include "message.hpp"
 
 namespace evsim{
+	class CMessage;
 	class CModel : public CObject
 	{
 	public:
@@ -27,8 +29,7 @@ public:
 	virtual void register_input_port(Port& port);
 	virtual void register_output_port(Port& port);
 
-	//virtual Time get_first_event_time() = 0;
-private:
+	private:
 	std::string m_model_name;
 
 	std::set<Port> m_in_port;

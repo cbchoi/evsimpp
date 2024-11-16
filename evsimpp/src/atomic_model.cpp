@@ -52,4 +52,10 @@ namespace evsim
 	{
 		m_cancel_reschedule_f = sw;
 	}
+
+	Message& CAtomicModel::create_message(Port& port, Time _time)
+	{
+		Message* pMessage = new Message(this, port, _time);
+		return *pMessage;
+	}
 }

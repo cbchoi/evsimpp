@@ -1,6 +1,6 @@
 #pragma once
 
-#include "dummy_atomic.hpp"
+#include "model_dummy_atomic.hpp"
 #include "gtest/gtest.h"
 
 namespace evsim {
