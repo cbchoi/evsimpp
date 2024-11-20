@@ -4,11 +4,12 @@
 
 namespace evsim
 {
-	IExecutor* CExecutorFactory::create_entity(CModel* model)
+	IExecutor CExecutorFactory::create_entity(CModel* model)
 	{
 		if((model->obj_type() & ATOMIC_TYPE) == ATOMIC_TYPE)
 		{
-			return new CAtomicExecutor(model);
+			iExecutor* exec = new CAtomicExecutor(model);
+			return IExecutor(exec);
 		}
 		else if((model->obj_type() & COUPLED_TYPE) == COUPLED_TYPE)
 		{

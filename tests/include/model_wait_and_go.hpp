@@ -23,7 +23,12 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	virtual void external_transition(const Port& port, MessageDeliverer& msg)
+	~CWaitGEN()
+	{
+	
+	}
+
+	virtual void external_transition(const port& _port, MessageDeliverer& msg)
 	{
 		if (CUR_STATE == IDLE)
 		{

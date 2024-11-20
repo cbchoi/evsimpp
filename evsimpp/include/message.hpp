@@ -11,17 +11,17 @@ namespace evsim
 	class message :public CObject
 	{
 	private:
-		message(CModel* src, Port& port, Time _time = 0);
+		message(CModel* src, port& port, Time _time = 0);
 	public:
 		virtual ~message() = default;
 	public:
 		virtual CModel* get_source() const { return msg_source; }
-		virtual Port* get_out_port() const { return out_port; }
+		virtual port* get_out_port() const { return out_port; }
 		virtual Time get_scheduled_time() const { return scheduled_time; }
 
 	protected:
 		CModel* msg_source;
-		Port*	out_port;
+		port*	out_port;
 
 		Time	scheduled_time;
 		static UNIQ OBJECT_ID;

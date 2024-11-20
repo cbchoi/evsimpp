@@ -19,7 +19,7 @@ namespace evsim
 		}
 
 
-		virtual void external_transition(const Port& port, MessageDeliverer& msg_delivery)
+		virtual void external_transition(const port& port, MessageDeliverer& msg_delivery)
 		{
 			std::multiset<Message>& messages = msg_delivery.get_contents();
 			for (const Message& msg : messages)

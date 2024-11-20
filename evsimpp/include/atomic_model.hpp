@@ -16,7 +16,7 @@ public:
 	virtual ~CAtomicModel();
 
 public:
-	virtual void external_transition(const Port& port, MessageDeliverer& msg) = 0;
+	virtual void external_transition(const port& port, MessageDeliverer& msg) = 0;
 	virtual void internal_transition() = 0;
 	virtual void output_function(MessageDeliverer& msg) = 0;
 	virtual Time time_advance();
@@ -31,7 +31,7 @@ public: // Utility Functions
 	bool is_cancel_reschedule() const;
 	void set_cancel_reschedule(bool sw);
 
-	virtual Message create_message(Port& port, Time _time = 0);
+	virtual Message create_message(port& port, Time _time = 0);
 
 protected:
 	std::set<State> m_states;

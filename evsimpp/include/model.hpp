@@ -23,17 +23,17 @@ public:
 	const std::string& get_name() const;
 	void set_name(const std::string& _name);
 
-	const std::set<Port>& in_port() const;
-	const std::set<Port>& out_port() const;
+	const std::set<port>& in_port() const;
+	const std::set<port>& out_port() const;
 
-	virtual void register_input_port(Port& port);
-	virtual void register_output_port(Port& port);
+	virtual void register_input_port(port& port);
+	virtual void register_output_port(port& port);
 
 	private:
 	std::string m_model_name;
 
-	std::set<Port> m_in_port;
-	std::set<Port> m_out_port;
+	std::set<port> m_in_port;
+	std::set<port> m_out_port;
 
 protected:
 	static UNIQ OBJECT_ID;

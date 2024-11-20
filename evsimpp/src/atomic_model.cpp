@@ -1,5 +1,7 @@
 #include "atomic_model.hpp"
 
+#include <iostream>
+
 #include "definition.hpp"
 
 namespace evsim
@@ -12,7 +14,6 @@ namespace evsim
 
 	CAtomicModel::~CAtomicModel()
 	{
-		
 	}
 
 	CAtomicModel::CAtomicModel(const CAtomicModel& rhs)
@@ -53,7 +54,7 @@ namespace evsim
 		m_cancel_reschedule_f = sw;
 	}
 
-	Message CAtomicModel::create_message(Port& port, Time _time)
+	Message CAtomicModel::create_message(port& port, Time _time)
 	{
 		message* pMessage = new message(this, port, _time);
 		return Message(pMessage);

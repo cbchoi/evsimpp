@@ -10,8 +10,13 @@
 
 namespace evsim{
 class CModel;
-class IExecutor;
-class Port;
+class port;
+
+class message;
+typedef std::shared_ptr<message> Message;
+
+class iExecutor;
+typedef std::shared_ptr<iExecutor> IExecutor;
 
 typedef unsigned long long UNIQ;
 
@@ -45,13 +50,13 @@ inline bool operator<(const destory_constraint& lhs, const destory_constraint& r
 
 typedef struct EI
 {
-    Time next_event_t; IExecutor* p_executor;
+    Time next_event_t; IExecutor p_executor;
 } executor_item;
 
 typedef struct CR
 {
     CModel* model;
-    Port*   port;
+    port*   port;
 } coupling_relation;
 
 inline bool operator<(const executor_item& lhs, const executor_item& rhs) { return lhs.next_event_t - rhs.next_event_t < 0 ? true : false; }
@@ -60,8 +65,4 @@ inline bool DIFF_CHECK(Time first, Time second)
 {
     return fabs(first - second) <= std::numeric_limits<Time>::min();
 }
-
-
-class message;
-typedef std::shared_ptr<message> Message;
 }

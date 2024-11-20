@@ -1,17 +1,30 @@
 #include "string_info.hpp"
 
+#include <iostream>
+
+//#include "../../out/build/x64-Debug/_deps/googletest-src/googletest/include/gtest/internal/gtest-string.h"
+
 namespace evsim
 {
-	StringInfo::StringInfo(std::string name) :m_name(name)
+	StringInfo::StringInfo(std::string name)
+	:CObject(OBJECT_ID++, ENGINE_TYPE), m_name(name)
 	{
 		hash(m_name);
+
+		//std::cout << "C" << obj_id() << std::endl;
 	}
 
 	StringInfo::StringInfo(unsigned long hash, std::string name)
-		: m_name(name), m_hash(hash)
+		: CObject(OBJECT_ID++, ENGINE_TYPE), m_name(name), m_hash(hash)
 	{
 
 	}
+
+	StringInfo::~StringInfo()
+	{
+		//std::cout << "D" << obj_id() << std::endl;
+	}
+
 
 	StringInfo::operator unsigned long() const
 	{
@@ -37,4 +50,5 @@ namespace evsim
 		return rhs.m_hash == m_hash ? true : false;
 	}
 
+	UNIQ StringInfo::OBJECT_ID = 0;
 }

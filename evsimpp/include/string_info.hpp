@@ -2,14 +2,17 @@
 
 #include <string>
 
+#include "definition.hpp"
+#include "object.hpp"
+
 namespace evsim {
 
-    class StringInfo
+    class StringInfo:public CObject
     {
     public:
-        StringInfo(std::string name);;
+        StringInfo(std::string name);
         StringInfo(unsigned long hash, std::string name);
-
+        virtual ~StringInfo();
     public:
         virtual operator unsigned long() const;
         virtual operator std::string() const;
@@ -18,5 +21,7 @@ namespace evsim {
     public:
         std::string m_name;
         unsigned long m_hash;
+
+        static UNIQ OBJECT_ID;
     };
 }
