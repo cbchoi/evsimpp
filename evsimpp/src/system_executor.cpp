@@ -101,9 +101,9 @@ namespace evsim
 
 	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
 	{
-		for(const Message& msg : msg_deliver.get_contents())
+		for(const Message msg : msg_deliver.get_contents())
 		{
-			coupling_relation cr(msg.get_source(), msg.get_out_port ());
+			coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
 			
 			#ifdef _DBG_MODEL_EXECUTOR_
 			std::cout << "Message:";
@@ -213,10 +213,10 @@ namespace evsim
 		m_external_input_event.insert_message(msg);
 	}
 
-	Message& CSystemExecutor::create_message(Port& port, Time _time)
+	Message CSystemExecutor::create_message(Port& port, Time _time)
 	{
-		Message* pMessage = new Message(this, port, _time);
-		return *pMessage;
+		message* pMessage = new message(this, port, _time);
+		return Message(pMessage);
 	}
 
 	void CSystemExecutor::sim_set_up()

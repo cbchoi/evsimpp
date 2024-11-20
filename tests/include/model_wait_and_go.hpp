@@ -41,7 +41,7 @@ public:
 	{
 		if (CUR_STATE == GEN)
 		{
-			Message& msg = create_message( output);
+			Message msg = create_message( output);
 			msg_deliver.insert_message(msg);
 			elem_count++;
 		}

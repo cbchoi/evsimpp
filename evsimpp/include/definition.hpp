@@ -6,6 +6,7 @@
 #endif
 #include <cmath>
 #include <limits>
+#include <memory>
 
 namespace evsim{
 class CModel;
@@ -60,4 +61,7 @@ inline bool DIFF_CHECK(Time first, Time second)
     return fabs(first - second) <= std::numeric_limits<Time>::min();
 }
 
+
+class message;
+typedef std::shared_ptr<message> Message;
 }

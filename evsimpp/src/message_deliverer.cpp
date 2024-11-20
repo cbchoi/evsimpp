@@ -7,7 +7,7 @@ namespace evsim
 		m_data_list.clear();
 	}
 
-	void MessageDeliverer::insert_message(Message& msg)
+	void MessageDeliverer::insert_message(Message msg)
 	{// TODO: consider to use smart pointer
 		m_data_list.insert(msg);
 	}

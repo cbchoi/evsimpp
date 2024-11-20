@@ -34,8 +34,8 @@ public:
 	void insert_coupling(CModel* p_src, Port& src_port,
 						 CModel* p_dst, Port& dst_port);
 
-	void insert_external_event( Message msg);
-	Message& create_message(Port& in_port, Time _time = 0);
+	void insert_external_event(Message msg);
+	Message create_message(Port& in_port, Time _time = 0);
 
 	void sim_set_up();
 	void sim_tear_down();

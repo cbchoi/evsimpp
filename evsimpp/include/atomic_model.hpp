@@ -31,7 +31,7 @@ public: // Utility Functions
 	bool is_cancel_reschedule() const;
 	void set_cancel_reschedule(bool sw);
 
-	virtual Message& create_message(Port& port, Time _time = 0);
+	virtual Message create_message(Port& port, Time _time = 0);
 
 protected:
 	std::set<State> m_states;

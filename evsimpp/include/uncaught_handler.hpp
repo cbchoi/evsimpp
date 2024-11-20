@@ -25,8 +25,8 @@ namespace evsim
 			for (const Message& msg : messages)
 			{
 				std::cout << "Uncaught Message:" 
-						  << "From: " << msg.get_source()->get_name() << "\n"
-					      << "Port: " << (*msg.get_out_port()).m_name << std::endl;
+						  << "From: " << (msg.get())->get_source()->get_name() << "\n"
+					      << "Port: " << (*(msg.get())->get_out_port()).m_name << std::endl;
 			}
 		};
 
