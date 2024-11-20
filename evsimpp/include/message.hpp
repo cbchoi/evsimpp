@@ -8,20 +8,20 @@ namespace evsim
 	class CAtomicModel;
 	class CSystemExecutor;
 
-	class Message:public CObject
+	class message :public CObject
 	{
 	private:
-		Message(CModel* src, Port& port, Time _time = 0);
+		message(CModel* src, port& port, Time _time = 0);
 	public:
-		virtual ~Message() = default;
+		virtual ~message() = default;
 	public:
 		virtual CModel* get_source() const { return msg_source; }
-		virtual Port* get_out_port() const { return out_port; }
+		virtual port* get_out_port() const { return out_port; }
 		virtual Time get_scheduled_time() const { return scheduled_time; }
 
 	protected:
 		CModel* msg_source;
-		Port*	out_port;
+		port*	out_port;
 
 		Time	scheduled_time;
 		static UNIQ OBJECT_ID;
@@ -29,6 +29,6 @@ namespace evsim
 		friend CAtomicModel;
 		friend CSystemExecutor;
 	public:
-		bool operator<(const Message& rhs) const;
+		bool operator<(const message& rhs) const;
 	};
 }

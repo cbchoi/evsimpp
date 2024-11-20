@@ -23,7 +23,12 @@ public:
 		//SET_INIT_STATE(IDLE3);
 	}
 
-	virtual void external_transition(const Port& port, MessageDeliverer& msg)
+	virtual ~CPEG()
+	{
+		
+	}
+
+	virtual void external_transition(const port& _port, MessageDeliverer& msg)
 	{
 		
 	}

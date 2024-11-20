@@ -34,22 +34,27 @@ namespace evsim {
         }
 
         // Class members declared here can be used by all tests in the test suite
-        Port p1; 
-        Port p2; 
-        Port p3; 
+        port p1;
+        port p2;
+        port p3;
     };
 
     TEST_F(AtomicTest, test_port)
     {  
         CDummyAtomic da = CDummyAtomic("da");
         {
-            const std::set<Port>::iterator iter = da.in_port().find(Port("two"));
-            ASSERT_NE(iter, da.in_port().end());
-            EXPECT_EQ(iter->m_name, "two");
+            int before = 0;
+			{
+                const std::set<port>::iterator iter = da.in_port().find(port("two"));
+                ASSERT_NE(iter, da.in_port().end());
+                EXPECT_EQ(iter->m_name, "two");
+			}
+            int after = 0;
+            
         }
 
         {
-            const std::set<Port>::iterator iter = da.in_port().find(Port("four"));
+            const std::set<port>::iterator iter = da.in_port().find(port("four"));
             EXPECT_EQ(iter, da.in_port().end());
         }
     }
@@ -58,7 +63,7 @@ namespace evsim {
     {
         CDummyAtomic da = CDummyAtomic("da");
         MessageDeliverer sm = MessageDeliverer();
-        Port p1 = Port("two");
+        port p1 = port("two");
         da.external_transition(p1, sm);
         EXPECT_EQ(da.IDLE2.m_name, da.get_current_state().m_name);
     }

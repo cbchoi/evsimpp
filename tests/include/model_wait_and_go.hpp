@@ -23,7 +23,12 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	virtual void external_transition(const Port& port, MessageDeliverer& msg)
+	~CWaitGEN()
+	{
+	
+	}
+
+	virtual void external_transition(const port& _port, MessageDeliverer& msg)
 	{
 		if (CUR_STATE == IDLE)
 		{
@@ -41,7 +46,7 @@ public:
 	{
 		if (CUR_STATE == GEN)
 		{
-			Message& msg = create_message( output);
+			Message msg = create_message( output);
 			msg_deliver.insert_message(msg);
 			elem_count++;
 		}

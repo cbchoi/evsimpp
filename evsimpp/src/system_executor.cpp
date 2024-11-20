@@ -39,26 +39,26 @@ namespace evsim
 	CSystemExecutor* CSystemExecutor::create_system_executor(SimConfig config, std::string _name)
 	{ return new CSystemExecutor(_name, config); }
 
-	Port& CSystemExecutor::create_input_port(std::string name)
+	port& CSystemExecutor::create_input_port(std::string name)
 	{
-		std::shared_ptr<Port> port = std::make_shared <Port>(name);
-		m_external_input_ports[name] = port;
-		return *port;
+		std::shared_ptr<port> _port = std::make_shared <port>(name);
+		m_external_input_ports[name] = _port;
+		return *_port;
 	}
 
-	Port& CSystemExecutor::get_input_port(std::string name)
+	port& CSystemExecutor::get_input_port(std::string name)
 	{
 		return *m_external_input_ports[name];
 	}
 
-	Port& CSystemExecutor::create_output_port(std::string name)
+	port& CSystemExecutor::create_output_port(std::string name)
 	{
-		std::shared_ptr<Port> port = std::make_shared <Port>(name);
-		m_external_output_ports[name] = port;
-		return *port;
+		std::shared_ptr<port> _port = std::make_shared <port>(name);
+		m_external_output_ports[name] = _port;
+		return *_port;
 	}
 
-	Port& CSystemExecutor::get_output_port(std::string name)
+	port& CSystemExecutor::get_output_port(std::string name)
 	{
 		return *m_external_output_ports[name];
 	}
@@ -81,7 +81,7 @@ namespace evsim
 					Time d_time = iter->destory_t;
 					CModel* pModel = iter->p_model;
 					m_live_model_list.insert(destory_constraint(d_time, pModel));
-					IExecutor* executor = m_config.ef->create_entity(pModel);
+					IExecutor executor = m_config.ef->create_entity(pModel);
 					
 					executor->set_req_time(m_global_t);
 					executor_item ei(executor->time_advance(), executor);
@@ -101,9 +101,9 @@ namespace evsim
 
 	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
 	{
-		for(const Message& msg : msg_deliver.get_contents())
+		for(const Message msg : msg_deliver.get_contents())
 		{
-			coupling_relation cr(msg.get_source(), msg.get_out_port ());
+			coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
 			
 			#ifdef _DBG_MODEL_EXECUTOR_
 			std::cout << "Message:";
@@ -154,7 +154,7 @@ namespace evsim
 					else
 					{
 						// internal coupling handling
-						std::map<CModel*, IExecutor*>::iterator dst = m_model_executor_map.find(cr.model);
+						std::map<CModel*, IExecutor>::iterator dst = m_model_executor_map.find(cr.model);
 						if (dst != m_model_executor_map.end())
 						{
 							m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
@@ -198,7 +198,7 @@ namespace evsim
 	{
 	}
 
-	void CSystemExecutor::insert_coupling(CModel* p_src, Port& src_port, CModel* p_dst, Port& dst_port)
+	void CSystemExecutor::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
 	{
 		coupling_relation src(p_src, &src_port);
 		coupling_relation dst(p_dst, &dst_port);
@@ -213,10 +213,10 @@ namespace evsim
 		m_external_input_event.insert_message(msg);
 	}
 
-	Message& CSystemExecutor::create_message(Port& port, Time _time)
+	Message CSystemExecutor::create_message(port& port, Time _time)
 	{
-		Message* pMessage = new Message(this, port, _time);
-		return *pMessage;
+		message* pMessage = new message(this, port, _time);
+		return Message(pMessage);
 	}
 
 	void CSystemExecutor::sim_set_up()

@@ -28,6 +28,7 @@ namespace evsim {
 
         ~SimAlgorithm() override {
             // You can do clean-up work that doesn't throw exceptions here.
+            delete sim_config.ef;
         }
 
         // If the constructor and destructor are not enough for setting up
@@ -57,6 +58,7 @@ namespace evsim {
         pPEG->set_current_state(&state);
         se->simulate(4);
         EXPECT_EQ(pPEG->elem_count, 2);
+        delete se;
     }
 
     TEST_F(SimAlgorithm, multiple_model)
@@ -76,6 +78,7 @@ namespace evsim {
         se->simulate(10);
         EXPECT_EQ(pPEG1->elem_count, 10);
         EXPECT_EQ(pPEG2->elem_count, 5);
+        delete se;
     }
 
     TEST_F(SimAlgorithm, coupling)
@@ -93,6 +96,7 @@ namespace evsim {
         se->insert_coupling(pPEG, pPEG->output, pProcessor, pProcessor->input);
 
         se->simulate(10);
+        delete se;
     }
 
     TEST_F(SimAlgorithm, output_handling)
@@ -122,12 +126,13 @@ namespace evsim {
         EXPECT_EQ(pProc1->elem_count, 10);
         EXPECT_EQ(pProc2->elem_count, 10);
         EXPECT_EQ(pProc3->elem_count, 10);
+        delete se;
     }
 
     TEST_F(SimAlgorithm, external_input_handling)
     {
         CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
-        Port& inport = se->create_input_port("engine_input");
+        port& inport = se->create_input_port("engine_input");
         se->register_input_port(inport);
 
         CWaitGEN* pWaitGen = new CWaitGEN("proc");
@@ -139,22 +144,29 @@ namespace evsim {
 
         se->simulate(10);
         EXPECT_EQ(pWaitGen->elem_count, 10);
+        delete se;
     }
 
     TEST_F(SimAlgorithm, external_input_scedule_handling)
     {
-        CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
-        Port& inport = se->create_input_port("engine_input");
-        se->register_input_port(inport);
+        int before = 0;
+        {
+            CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
+            port& inport = se->create_input_port("engine_input");
+            se->register_input_port(inport);
 
-        CWaitGEN* pWaitGen = new CWaitGEN("proc");
-        se->register_entity(pWaitGen, 0, Infinity);
-        se->insert_coupling(se, inport, pWaitGen, pWaitGen->input);
+            CWaitGEN* pWaitGen = new CWaitGEN("proc");
+            se->register_entity(pWaitGen, 0, Infinity);
+            se->insert_coupling(se, inport, pWaitGen, pWaitGen->input);
 
-        Message msg = se->create_message(inport, 5);
-        se->insert_external_event(msg);
+            Message msg = se->create_message(inport, 5);
+            se->insert_external_event(msg);
 
-        se->simulate(10);
-        EXPECT_EQ(pWaitGen->elem_count, 5);
+            se->simulate(10);
+            EXPECT_EQ(pWaitGen->elem_count, 5);
+
+            delete se;
+        }
+        int after = 0;
     }
 }

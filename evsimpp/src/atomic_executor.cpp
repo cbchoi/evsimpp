@@ -1,6 +1,7 @@
 #include "atomic_executor.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 namespace evsim {
 	CAtomicExecutor::CAtomicExecutor(
@@ -10,7 +11,12 @@ namespace evsim {
 		next_event_t = request_t = behavior_object->time_advance();
 	}
 
-	void CAtomicExecutor::external_transition(const Port& port, MessageDeliverer& msg)
+	CAtomicExecutor::~CAtomicExecutor()
+	{
+		delete behavior_object;
+	}
+
+	void CAtomicExecutor::external_transition(const port& port, MessageDeliverer& msg)
 	{
 		behavior_object->external_transition(port, msg);
 	}
