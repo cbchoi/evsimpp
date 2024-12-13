@@ -63,10 +63,10 @@ protected:
 
 	std::map<coupling_relation, std::vector<coupling_relation>> m_coupling_map;
 
-	std::map<std::string, std::shared_ptr<port>> m_external_input_ports;
+	std::map<std::string, std::shared_ptr<port>> m_external_input_ports; // TODO std::string -> StringInfo
 	std::map<std::string, std::shared_ptr<port>> m_external_output_ports;
 protected:
-	MessageDeliverer m_external_input_event;
+	MessageDeliverer m_external_input_event; // TODO MemoryLeak Check
 	MessageDeliverer m_external_output_event;
 };
 

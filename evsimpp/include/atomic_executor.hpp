@@ -11,7 +11,7 @@ namespace evsim {
 	class CAtomicExecutor:public iExecutor
 	{
 	public:
-		CAtomicExecutor(CModel* pbehavior);
+		CAtomicExecutor(CModel* pbehavior, Time creation_t);
 		virtual ~CAtomicExecutor();
 
 	public:

@@ -5,10 +5,11 @@
 
 namespace evsim {
 	CAtomicExecutor::CAtomicExecutor(
-		CModel* pbehavior)
+		CModel* pbehavior, Time creation_t)
 	{
 		behavior_object = dynamic_cast<CAtomicModel*>(pbehavior);
 		next_event_t = request_t = behavior_object->time_advance();
+		this->set_req_time(creation_t);
 	}
 
 	CAtomicExecutor::~CAtomicExecutor()

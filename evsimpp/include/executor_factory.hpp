@@ -9,6 +9,6 @@ class CExecutorFactory
 public:
 	CExecutorFactory() = default;
 
-	IExecutor create_entity(CModel* model);
+	IExecutor create_entity(CModel* model, Time created_t);
 };
 }
