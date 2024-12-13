@@ -3,13 +3,13 @@
 namespace evsim
 {
 	CCoupledModel::CCoupledModel(std::string name)
-		:CModel(COUPLED_TYPE, name)
+		:CModel(COUPLED_TYPE, name), next_event_t(Infinity)
 	{
 
 	}
 
 	CCoupledModel::CCoupledModel(const CCoupledModel& rhs)
-		:CModel(COUPLED_TYPE, rhs.get_name())
+		:CModel(COUPLED_TYPE, rhs.get_name()), next_event_t(Infinity)
 	{// TODO
 	}
 
@@ -40,6 +40,11 @@ namespace evsim
 			return internal_models[siName];
 		}
 		return nullptr;
+	}
+
+	std::map<StringInfo, Model>& CCoupledModel::get_models()
+	{
+		return internal_models;
 	}
 }
 

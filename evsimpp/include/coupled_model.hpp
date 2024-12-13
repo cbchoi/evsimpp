@@ -24,9 +24,11 @@ namespace evsim {
 
 	public: // Utility Functions
 		Model find_model(std::string name);
-
+		std::map<StringInfo, Model>& get_models();
 	protected:
 		std::map<StringInfo, Model> internal_models;
+
+		Time next_event_t;
 	};
 
 }
