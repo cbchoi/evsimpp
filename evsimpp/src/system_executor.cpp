@@ -101,7 +101,7 @@ namespace evsim
 
 	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
 	{
-		for(const Message msg : msg_deliver.get_contents())
+		for(auto& msg : msg_deliver.get_contents())
 		{
 			coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
 			
@@ -187,6 +187,7 @@ namespace evsim
 				Message msg = *deliver.get_contents().begin();
 				output_handling(deliver);
 				deliver.get_contents().erase(deliver.get_contents().begin());
+				msg.reset();
 			}else
 			{
 				break;
