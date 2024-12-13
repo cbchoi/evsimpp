@@ -15,7 +15,10 @@ namespace evsim
 
 	CCoupledModel::~CCoupledModel()
 	{
-		
+		for(auto& iter: internal_models)
+		{
+			iter.second.reset();
+		}
 	}
 
 	void CCoupledModel::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
