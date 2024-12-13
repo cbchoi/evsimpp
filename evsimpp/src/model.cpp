@@ -15,7 +15,7 @@ namespace evsim
 	{
 	}
 
-	const std::string& CModel::get_name() const
+	const StringInfo& CModel::get_name() const
 	{
 		return m_model_name;
 	}

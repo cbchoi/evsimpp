@@ -20,7 +20,7 @@ namespace evsim{
 			std::string ename = "");
 
 public:
-	const std::string& get_name() const;
+	const StringInfo& get_name() const;
 	void set_name(const std::string& _name);
 
 	const std::set<port>& in_port() const;
@@ -30,7 +30,7 @@ public:
 	virtual void register_output_port(port& port);
 
 	private:
-	std::string m_model_name;
+	StringInfo m_model_name;
 
 	std::set<port> m_in_port;
 	std::set<port> m_out_port;

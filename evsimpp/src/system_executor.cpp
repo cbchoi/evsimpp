@@ -81,9 +81,9 @@ namespace evsim
 					Time d_time = iter->destory_t;
 					CModel* pModel = iter->p_model;
 					m_live_model_list.insert(destory_constraint(d_time, pModel));
-					IExecutor executor = m_config.ef->create_entity(pModel);
+					IExecutor executor = m_config.ef->create_entity(pModel, m_global_t);
 					
-					executor->set_req_time(m_global_t);
+					//executor->set_req_time(m_global_t);
 					executor_item ei(executor->time_advance(), executor);
 					m_schedule_list.insert(ei);
 					m_model_executor_map.insert(std::make_pair(pModel, executor));
@@ -101,7 +101,7 @@ namespace evsim
 
 	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
 	{
-		for(const Message msg : msg_deliver.get_contents())
+		for(auto& msg : msg_deliver.get_contents())
 		{
 			coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
 			
@@ -187,6 +187,7 @@ namespace evsim
 				Message msg = *deliver.get_contents().begin();
 				output_handling(deliver);
 				deliver.get_contents().erase(deliver.get_contents().begin());
+				msg.reset();
 			}else
 			{
 				break;
@@ -263,7 +264,7 @@ namespace evsim
 
 			m_schedule_list.insert(ei);
 
-			// Move to the next object in deque
+			// Move to the next object in multiset
 			ei = *m_schedule_list.begin();
 			m_schedule_list.erase(m_schedule_list.begin());
 		}
