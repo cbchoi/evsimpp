@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
+#include <map>
 
+#include "definition.hpp"
 #include "model.hpp"
 #include "message_deliverer.hpp"
 
@@ -18,11 +20,13 @@ namespace evsim {
 		void insert_coupling(CModel* p_src, port& src_port,
 			CModel* p_dst, port& dst_port);
 
+		void insert_model(CModel* pModel);
+
 	public: // Utility Functions
-		
+		Model find_model(std::string name);
 
 	protected:
-		
+		std::map<StringInfo, Model> internal_models;
 	};
 
 }

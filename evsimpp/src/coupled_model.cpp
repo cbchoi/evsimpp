@@ -15,11 +15,28 @@ namespace evsim
 
 	CCoupledModel::~CCoupledModel()
 	{
+		
 	}
 
 	void CCoupledModel::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
 	{
 
+	}
+
+	void CCoupledModel::insert_model(CModel* pModel)
+	{
+		internal_models.insert(std::make_pair(pModel->get_name(), Model(pModel)));
+	}
+
+	Model CCoupledModel::find_model(std::string name)
+	{
+		StringInfo siName(name);
+		std::map<StringInfo, Model>::iterator iter = internal_models.find(siName);
+		if (iter != internal_models.end())
+		{
+			return internal_models[siName];
+		}
+		return nullptr;
 	}
 }
 

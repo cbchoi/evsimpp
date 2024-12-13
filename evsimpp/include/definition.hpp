@@ -10,6 +10,8 @@
 
 namespace evsim{
 class CModel;
+typedef std::shared_ptr<CModel> Model;
+
 class port;
 
 class message;
@@ -17,6 +19,7 @@ typedef std::shared_ptr<message> Message;
 
 class iExecutor;
 typedef std::shared_ptr<iExecutor> IExecutor;
+
 
 typedef unsigned long long UNIQ;
 
