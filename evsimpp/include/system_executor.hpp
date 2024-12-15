@@ -42,6 +42,9 @@ public:
 	void sim_tear_down();
 	Time schedule(Time t);
 	Time simulate(Time t);
+
+	Time get_global_time() { return m_global_t; }
+	CExecutorFactory* get_executor_factory() { return m_config.ef; }
 protected:
 	void create_entity();
 	void output_handling(MessageDeliverer& msg_deliver);

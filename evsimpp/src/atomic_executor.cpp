@@ -5,16 +5,16 @@
 
 namespace evsim {
 	CAtomicExecutor::CAtomicExecutor(
-		CModel* pbehavior, Time creation_t)
+		Model pbehavior, Time creation_t):bobject(pbehavior)
 	{
-		behavior_object = dynamic_cast<CAtomicModel*>(pbehavior);
+		behavior_object = dynamic_cast<CAtomicModel*>(bobject.get());
 		next_event_t = request_t = behavior_object->time_advance();
 		this->set_req_time(creation_t);
 	}
 
 	CAtomicExecutor::~CAtomicExecutor()
 	{
-		delete behavior_object;
+		bobject.reset();
 	}
 
 	void CAtomicExecutor::external_transition(const port& port, MessageDeliverer& msg)
@@ -59,8 +59,7 @@ namespace evsim {
 	{
 		if(behavior_object->is_cancel_reschedule())
 			behavior_object->set_cancel_reschedule(false);
-		
-		next_event_t = request_t;
-		return request_t;
+
+		return next_event_t = request_t;
 	}
 }

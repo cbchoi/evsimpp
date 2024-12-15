@@ -11,7 +11,7 @@ namespace evsim {
 	class CHierarchicalCoupled:public iExecutor
 	{
 	public:
-		CHierarchicalCoupled(CModel* pbehavior, Time creation_t, CExecutorFactory* ef);
+		CHierarchicalCoupled(Model pbehavior, CExecutorFactory* ef, CModel* engine, Time creation_t, Time current_t);
 		virtual ~CHierarchicalCoupled();
 
 	public:
@@ -27,6 +27,8 @@ namespace evsim {
 		Time next_event_t; // Next event time
 		Time request_t;  // Request time initialized to infinity
 
+		CModel* m_engine;
+		Model bobject;
 		CCoupledModel* behavior_object;
 
 	protected:
