@@ -9,7 +9,7 @@
 #include "port.hpp"
 #include "message_deliverer.hpp"
 
-#include "model_dummy_atomic.hpp"
+#include "model_wait_and_go.hpp"
 
 using namespace evsim;
 
@@ -20,19 +20,23 @@ public:
 	{
 		REGISTER_INPUT_PORT(one);
 		REGISTER_INPUT_PORT(two);
-		REGISTER_INPUT_PORT(three);
+		//REGISTER_INPUT_PORT(three);
 
-		CDummyAtomic* pModel1 = new CDummyAtomic("Model1");
-		CDummyAtomic* pModel2 = new CDummyAtomic("Model2");
-		CDummyAtomic* pModel3 = new CDummyAtomic("Model3");
+		CWaitGEN* pModel1 = new CWaitGEN("Model1");
+		CWaitGEN* pModel2 = new CWaitGEN("Model2");
+		//CWaitGEN* pModel3 = new CWaitGEN("Model3");
 
 		insert_model(pModel1);
 		insert_model(pModel2);
-		insert_model(pModel3);
+		//insert_model(pModel3);
+
+		insert_coupling(this, one, pModel1, pModel1->input);
+		insert_coupling(this, two, pModel2, pModel2->input);
+		//insert_coupling(this,three, pModel3, pModel3->input);
 	}
 
 public:
 	DECLARE_INPUT_PORT(one);
 	DECLARE_INPUT_PORT(two);
-	DECLARE_INPUT_PORT(three);
+	//DECLARE_INPUT_PORT(three);
 };

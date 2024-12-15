@@ -43,11 +43,11 @@ protected:
 	std::string engine_name;
 };
 
-	inline bool operator<(const coupling_relation& lhs, const coupling_relation& rhs)
+	inline bool operator<(const coupling_relation& lhs,const coupling_relation& rhs)
 	{
-		if (lhs.model->obj_id() == rhs.model->obj_id())
-			return lhs.port->m_hash - rhs.port->m_hash < 0 ? true : false;
+		if (lhs.model == rhs.model)
+			return lhs.port->m_hash < rhs.port->m_hash;
 		else
-			return lhs.model->obj_id() - rhs.model->obj_id() < 0 ? true : false;
+			return lhs.model->obj_id() < rhs.model->obj_id();
 	}
 }

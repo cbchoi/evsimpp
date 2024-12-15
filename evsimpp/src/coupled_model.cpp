@@ -23,7 +23,12 @@ namespace evsim
 
 	void CCoupledModel::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
 	{
+		coupling_relation src(p_src, &src_port);
+		coupling_relation dst(p_dst, &dst_port);
 
+		if (m_coupling_map.find(src) == m_coupling_map.end())
+			m_coupling_map[src] = std::vector<coupling_relation>();
+		m_coupling_map[src].push_back(dst);
 	}
 
 	void CCoupledModel::insert_model(CModel* pModel)
@@ -45,6 +50,11 @@ namespace evsim
 	std::map<StringInfo, Model>& CCoupledModel::get_models()
 	{
 		return internal_models;
+	}
+
+	std::map<coupling_relation, std::vector<coupling_relation>>& CCoupledModel::get_couplings()
+	{
+		return m_coupling_map;
 	}
 }
 

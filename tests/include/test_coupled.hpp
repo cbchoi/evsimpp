@@ -1,5 +1,10 @@
 #pragma once
 
+#include "message.hpp"
+#include "sim_config.hpp"
+#include "executor_factory.hpp"
+#include "system_executor.hpp"
+
 #include "model_dummy_coupled.hpp"
 #include "gtest/gtest.h"
 
@@ -11,9 +16,13 @@ namespace evsim {
         // be empty.
 
         StructureTest()
-            :p1("one"), p2("two"), p3("three")
         {
             // You can do set-up work for each test here.
+            sim_config.engine_name = "evsimpp_first";
+            sim_config.execution_mode = BLOCKING;
+            sim_config.simulation_mode = VIRTUAL;
+            sim_config.ef = new CExecutorFactory();
+            sim_config.time_resolution = 1;
         }
 
         ~StructureTest() override {
@@ -24,19 +33,18 @@ namespace evsim {
         // and cleaning up each test, you can define the following methods:
 
         void SetUp() override {
-            // Code here will be called immediately after the constructor (right
-            // before each test).
+            se = CSystemExecutor::create_system_executor(sim_config);
         }
 
         void TearDown() override {
             // Code here will be called immediately after each test (right
             // before the destructor).
+            delete se;
         }
 
         // Class members declared here can be used by all tests in the test suite
-        port p1;
-        port p2;
-        port p3;
+        SimConfig sim_config;
+        CSystemExecutor* se;
     };
 
     TEST_F(StructureTest, test_port)
@@ -50,7 +58,6 @@ namespace evsim {
                 EXPECT_EQ(iter->m_name, "two");
             }
             int after = 0;
-
         }
 
         {
@@ -68,7 +75,23 @@ namespace evsim {
 
     TEST_F(StructureTest, test_coupling)
     {
-        
+        CDummyCoupled* da = new CDummyCoupled("da");
+        se->register_entity(da, 0, Infinity);
+
+        port& input1 = se->create_input_port("one");
+        port& input2 = se->create_input_port("two");
+
+        se->insert_coupling(se, input1, da, da->one);
+        //se->insert_coupling(se, input2, da, da->two);
+
+        Message msg1 = se->create_message(input1);
+        se->insert_external_event(msg1);
+        Message msg2 = se->create_message(input2, 5);
+        //se->insert_external_event(msg2);
+
+        se->simulate(10);
+        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
+        //EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
 }
 

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 
 #include "definition.hpp"
 #include "model.hpp"
@@ -25,9 +26,11 @@ namespace evsim {
 	public: // Utility Functions
 		Model find_model(std::string name);
 		std::map<StringInfo, Model>& get_models();
+
+		std::map<coupling_relation, std::vector<coupling_relation>>& get_couplings();
 	protected:
 		std::map<StringInfo, Model> internal_models;
-
+		std::map<coupling_relation, std::vector<coupling_relation>> m_coupling_map;
 		Time next_event_t;
 	};
 

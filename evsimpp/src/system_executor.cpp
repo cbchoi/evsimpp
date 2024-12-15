@@ -81,7 +81,7 @@ namespace evsim
 					Time d_time = iter->destory_t;
 					CModel* pModel = iter->p_model;
 					m_live_model_list.insert(destory_constraint(d_time, pModel));
-					IExecutor executor = m_config.ef->create_entity(pModel, m_global_t);
+					IExecutor executor = m_config.ef->create_entity(pModel, this, m_global_t, m_global_t);
 					
 					//executor->set_req_time(m_global_t);
 					executor_item ei(executor->time_advance(), executor);
@@ -181,6 +181,8 @@ namespace evsim
 
 	void CSystemExecutor::event_delivery_handling(MessageDeliverer& deliver)
 	{
+		// TODO:
+		// Check Scheduled Event
 		while (deliver.has_contents()) {
 			if (deliver.get_first_event_time() <= m_global_t)
 			{
