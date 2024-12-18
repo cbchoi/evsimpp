@@ -59,10 +59,12 @@ public:
 			CUR_STATE = IDLE3;
 		}
 	};
+
 	virtual void output_function(evsim::MessageDeliverer& msg)
 	{
-		std::cout << "Hello" << std::endl;
+	
 	};
+
 public:
 	DECLARE_STATE(IDLE1, 1);
 	DECLARE_STATE(IDLE2, evsim::Infinity);
