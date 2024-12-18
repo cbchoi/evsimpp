@@ -23,12 +23,12 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	~CWaitGEN()
+	~CWaitGEN() override
 	{
 	
 	}
 
-	virtual void external_transition(const port& _port, MessageDeliverer& msg)
+	virtual void external_transition(const port& _port, MessageDeliverer& msg) override
 	{
 		if (CUR_STATE == IDLE)
 		{
@@ -36,13 +36,13 @@ public:
 		}
 	}
 
-	virtual void internal_transition()
+	virtual void internal_transition() override
 	{
 		// TODO: Handle Dynamic Generation of States
 		
 	};
 
-	virtual void output_function(evsim::MessageDeliverer& msg_deliver)
+	virtual void output_function(evsim::MessageDeliverer& msg_deliver) override
 	{
 		if (CUR_STATE == GEN)
 		{

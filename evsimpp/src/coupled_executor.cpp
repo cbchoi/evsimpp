@@ -15,6 +15,8 @@ evsim::CHierarchicalCoupled::CHierarchicalCoupled(Model pbehavior, CExecutorFact
 		m_schedule_list.insert(ei);
 		m_model_executor_map.insert(std::make_pair(pairs.second.get(), executor));
 	}
+
+	time_advance();
 }
 
 evsim::CHierarchicalCoupled::~CHierarchicalCoupled()

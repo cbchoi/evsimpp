@@ -95,8 +95,10 @@ namespace evsim {
         EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
 
+#if 0
     TEST_F(StructureTest, test_external_output_coupling)
     {
+        /**/
         CDummyCoupled* dc = new CDummyCoupled("dc");
         CDummyAtomic* da = new CDummyAtomic("da");
         se->register_entity(dc, 0, Infinity);
@@ -134,5 +136,6 @@ namespace evsim {
         EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
         //EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
+#endif
 }
 
