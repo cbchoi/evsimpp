@@ -73,7 +73,48 @@ namespace evsim {
         EXPECT_EQ((*cdc.find_model("Model1")).get_name(), StringInfo("Model1"));
     }
 
-    TEST_F(StructureTest, test_coupling)
+    TEST_F(StructureTest, test_external_input_coupling)
+    {
+        CDummyCoupled* da = new CDummyCoupled("da");
+        se->register_entity(da, 0, Infinity);
+
+        port& input1 = se->create_input_port("one");
+        port& input2 = se->create_input_port("two");
+
+        se->insert_coupling(se, input1, da, da->one);
+        se->insert_coupling(se, input2, da, da->two);
+
+        Message msg1 = se->create_message(input1);
+        se->insert_external_event(msg1);
+
+        Message msg2 = se->create_message(input2, 5);
+        se->insert_external_event(msg2);
+
+        se->simulate(10);
+        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
+        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
+    }
+
+    TEST_F(StructureTest, test_external_output_coupling)
+    {
+        CDummyCoupled* dc = new CDummyCoupled("dc");
+        CDummyAtomic* da = new CDummyAtomic("da");
+        se->register_entity(dc, 0, Infinity);
+        se->register_entity(da, 0, Infinity);
+
+        port& input = se->create_input_port("one");
+
+        se->insert_coupling(se, input, dc, dc->one);
+        se->insert_coupling(dc, dc->output, da, da->one);
+
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
+
+        se->simulate(10);
+        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(dc->find_model("Model1"))->elem_count, 10);
+    }
+
+    TEST_F(StructureTest, test_internal_coupling)
     {
         CDummyCoupled* da = new CDummyCoupled("da");
         se->register_entity(da, 0, Infinity);

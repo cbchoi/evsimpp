@@ -20,23 +20,22 @@ public:
 	{
 		REGISTER_INPUT_PORT(one);
 		REGISTER_INPUT_PORT(two);
-		//REGISTER_INPUT_PORT(three);
+		REGISTER_OUTPUT_PORT(output);
 
 		CWaitGEN* pModel1 = new CWaitGEN("Model1");
 		CWaitGEN* pModel2 = new CWaitGEN("Model2");
-		//CWaitGEN* pModel3 = new CWaitGEN("Model3");
 
 		insert_model(pModel1);
 		insert_model(pModel2);
-		//insert_model(pModel3);
 
 		insert_coupling(this, one, pModel1, pModel1->input);
 		insert_coupling(this, two, pModel2, pModel2->input);
-		//insert_coupling(this,three, pModel3, pModel3->input);
+		insert_coupling(pModel1, pModel1->output, this, output);
+		insert_coupling(pModel2, pModel2->output, this, output);
 	}
 
 public:
 	DECLARE_INPUT_PORT(one);
 	DECLARE_INPUT_PORT(two);
-	//DECLARE_INPUT_PORT(three);
+	DECLARE_OUTPUT_PORT(output);
 };
