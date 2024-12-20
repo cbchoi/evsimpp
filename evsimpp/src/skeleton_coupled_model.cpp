@@ -23,32 +23,32 @@ evsim::CSkeletonCoupledModel::~CSkeletonCoupledModel()
 		delete iter->second;
 	}
 }
-evsim::port* evsim::CSkeletonCoupledModel::create_input_port(std::string name)
+evsim::port& evsim::CSkeletonCoupledModel::create_input_port(std::string name)
 {
 	if (m_skel_in_ports.find(StringInfo(name)) == m_skel_in_ports.end())
 	{
 		port* in_port = new port(name);
 		m_skel_in_ports[StringInfo(name)] = in_port;
 		register_input_port(*in_port);
-		return in_port;
+		return *in_port;
 	}
 	else
 	{// Exception
-		return nullptr;
+		return INVAILD_PORT;
 	}
 }
 
-evsim::port* evsim::CSkeletonCoupledModel::create_output_port(std::string name)
+evsim::port& evsim::CSkeletonCoupledModel::create_output_port(std::string name)
 {
 	if (m_skel_out_ports.find(StringInfo(name)) == m_skel_out_ports.end())
 	{
 		port* output_port = new port(name);
 		m_skel_out_ports[StringInfo(name)] = output_port;
 		register_output_port(*output_port);
-		return output_port;
+		return *output_port;
 	}
 	else
 	{// Exception
-		return nullptr;
+		return INVAILD_PORT;
 	}
 }

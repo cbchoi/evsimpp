@@ -18,8 +18,8 @@ namespace evsim {
 		virtual ~CSkeletonCoupledModel();
 
 	public:
-		port* create_input_port(std::string name);
-		port* create_output_port(std::string name);
+		port& create_input_port(std::string name);
+		port& create_output_port(std::string name);
 		
 	protected:
 		std::map<StringInfo, port*> m_skel_in_ports;

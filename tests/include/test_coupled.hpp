@@ -121,8 +121,8 @@ namespace evsim {
         port& output = se->create_output_port("output");
 
         CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
-        port* sc_input = sc->create_input_port("sc_input");
-        port* sc_output = sc->create_output_port("sc_output");
+        port& sc_input = sc->create_input_port("sc_input");
+        port& sc_output = sc->create_output_port("sc_output");
 
         se->register_entity(sc, 0, Infinity);
 
@@ -132,8 +132,8 @@ namespace evsim {
         CWaitGEN* pWaitGen2 = new CWaitGEN("buf");
         sc->insert_model(pWaitGen2);
 
-        sc->insert_coupling(se, input, sc, *sc_input);
-        sc->insert_coupling(sc, *sc_output, se, output);
+        sc->insert_coupling(se, input, sc, sc_input);
+        sc->insert_coupling(sc, sc_output, se, output);
         sc->insert_coupling(pWaitGen1, pWaitGen1->output, pWaitGen2, pWaitGen2->input);
 
         se->simulate(10);
