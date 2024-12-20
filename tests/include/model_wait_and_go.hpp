@@ -12,7 +12,7 @@
 
 using namespace evsim;
 
-#define MODEL_DEBUG
+//#define MODEL_DEBUG
 
 class CWaitGEN :public CAtomicModel
 {
