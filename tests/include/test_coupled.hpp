@@ -6,6 +6,7 @@
 #include "system_executor.hpp"
 
 #include "model_dummy_coupled.hpp"
+#include "model_skeleton_coupled.hpp"
 #include "gtest/gtest.h"
 
 namespace evsim {
@@ -95,36 +96,40 @@ namespace evsim {
         EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
 
-#if 0
     TEST_F(StructureTest, test_external_output_coupling)
     {
         /**/
         CDummyCoupled* dc = new CDummyCoupled("dc");
-        CDummyAtomic* da = new CDummyAtomic("da");
         se->register_entity(dc, 0, Infinity);
-        se->register_entity(da, 0, Infinity);
 
         port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
 
         se->insert_coupling(se, input, dc, dc->one);
-        se->insert_coupling(dc, dc->output, da, da->one);
+        se->insert_coupling(dc, dc->output, se, output);
 
         Message msg1 = se->create_message(input);
         se->insert_external_event(msg1);
 
         se->simulate(10);
-        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(dc->find_model("Model1"))->elem_count, 10);
+        EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
 
     TEST_F(StructureTest, test_internal_coupling)
     {
-        CDummyCoupled* da = new CDummyCoupled("da");
-        se->register_entity(da, 0, Infinity);
+        CSkeletonCoupled* sc = new CSkeletonCoupled("skeleton");
+        se->register_entity(sc, 0, Infinity);
 
-        port& input1 = se->create_input_port("one");
-        port& input2 = se->create_input_port("two");
+        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        sc->insert_model(pWaitGen1);
 
-        se->insert_coupling(se, input1, da, da->one);
+        CWaitGEN* pWaitGen2 = new CWaitGEN("buf");
+        sc->insert_model(pWaitGen2);
+
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
+
+        se->insert_coupling(se, input, da, da->one);
         //se->insert_coupling(se, input2, da, da->two);
 
         Message msg1 = se->create_message(input1);
@@ -136,6 +141,6 @@ namespace evsim {
         EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
         //EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
-#endif
+
 }
 

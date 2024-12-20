@@ -45,6 +45,8 @@ public:
 
 	Time get_global_time() { return m_global_t; }
 	CExecutorFactory* get_executor_factory() { return m_config.ef; }
+
+	MessageDeliverer& get_external_output_deliverer() { return m_external_output_event; }
 protected:
 	void create_entity();
 	void output_handling(Message& msg_deliver);
