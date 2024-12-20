@@ -140,6 +140,24 @@ namespace evsim {
         se->simulate(10);
         EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
+    TEST_F(StructureTest, test_relay)
+    {
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
+
+        CDummyCoupled* dc = new CDummyCoupled("dummy");
+
+        se->register_entity(dc, 0, Infinity);
+
+        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        se->register_entity(pWaitGen1, 0, Infinity);
+
+
+        se->insert_coupling(dc, dc->output, pWaitGen1, pWaitGen1->input);
+ 
+        se->simulate(10);
+        EXPECT_EQ(pWaitGen1->elem_count, 10);
+    }
 
 }
 
