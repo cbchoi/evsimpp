@@ -3,7 +3,7 @@
 #include <string>
 #include <iostream>
 
-#include "coupled_model.hpp"
+#include "skeleton_coupled_model.hpp"
 #include "definition.hpp"
 #include "state.hpp"
 #include "port.hpp"
@@ -13,10 +13,10 @@
 
 using namespace evsim;
 
-class CSkeletonCoupled :public CCoupledModel
+class CDummySkeletonCoupled :public CSkeletonCoupledModel
 {
 public:
-	CSkeletonCoupled(std::string name) :evsim::CCoupledModel(name)
+	CDummySkeletonCoupled(std::string name) :evsim::CSkeletonCoupledModel(name)
 	{
 
 	}

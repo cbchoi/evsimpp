@@ -117,7 +117,13 @@ namespace evsim {
 
     TEST_F(StructureTest, test_internal_coupling)
     {
-        CSkeletonCoupled* sc = new CSkeletonCoupled("skeleton");
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
+
+        CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
+        port* sc_input = sc->create_input_port("sc_input");
+        port* sc_output = sc->create_output_port("sc_output");
+
         se->register_entity(sc, 0, Infinity);
 
         CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
@@ -126,20 +132,13 @@ namespace evsim {
         CWaitGEN* pWaitGen2 = new CWaitGEN("buf");
         sc->insert_model(pWaitGen2);
 
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
-
-        se->insert_coupling(se, input, da, da->one);
-        //se->insert_coupling(se, input2, da, da->two);
-
-        Message msg1 = se->create_message(input1);
-        se->insert_external_event(msg1);
-        Message msg2 = se->create_message(input2, 5);
-        //se->insert_external_event(msg2);
+        sc->insert_coupling(se, input, sc, *sc_input);
+        sc->insert_coupling(sc, *sc_output, se, output);
+        sc->insert_coupling(pWaitGen1, pWaitGen1->output, pWaitGen2, pWaitGen2->input);
 
         se->simulate(10);
-        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
-        //EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
+        se->simulate(10);
+        EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
 
 }
