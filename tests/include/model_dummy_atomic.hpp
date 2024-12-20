@@ -27,7 +27,7 @@ public:
 	}
 
 
-	virtual void external_transition(const port& port, MessageDeliverer& msg_delivery)
+	virtual void external_transition(const port& port, Message& msg_delivery)
 	{
 		if(port == one && CUR_STATE == IDLE1)
 		{

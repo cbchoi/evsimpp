@@ -28,7 +28,7 @@ public:
 		
 	}
 
-	virtual void external_transition(const port& _port, MessageDeliverer& msg)
+	virtual void external_transition(const port& _port, Message& msg)
 	{
 		
 	}
