@@ -47,7 +47,7 @@ public:
 	CExecutorFactory* get_executor_factory() { return m_config.ef; }
 protected:
 	void create_entity();
-	void output_handling(MessageDeliverer& msg_deliver);
+	void output_handling(Message& msg_deliver);
 	void event_delivery_handling(MessageDeliverer& deliver);
 protected:
 	SimConfig m_config;

@@ -99,83 +99,80 @@ namespace evsim
 		}
 	}
 
-	void CSystemExecutor::output_handling(MessageDeliverer& msg_deliver)
+	void CSystemExecutor::output_handling(Message& msg)
 	{
-		for(auto& msg : msg_deliver.get_contents())
+		coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
+
+#ifdef _DBG_MODEL_EXECUTOR_
+		std::cout << "Message:";
+		std::cout << msg.get_source() << ":" << msg.get_out_port() << std::endl;
+		std::cout << "---m_model_executor_map---" << std::endl;
+		for (std::map<CModel*, IExecutor*>::iterator iter = m_model_executor_map.begin();
+			iter != m_model_executor_map.end(); ++iter)
 		{
-			coupling_relation cr((msg.get())->get_source(), (msg.get())->get_out_port());
-			
-			#ifdef _DBG_MODEL_EXECUTOR_
-			std::cout << "Message:";
-			std::cout << msg.get_source() << ":" << msg.get_out_port () << std::endl;
-			std::cout << "---m_model_executor_map---" << std::endl;
-			for(std::map<CModel*, IExecutor*>::iterator iter = m_model_executor_map.begin();
-				iter != m_model_executor_map.end(); ++iter)
-				{
-					
-					std::cout << "model|executor : " << iter->first->get_name() << "("
-											   << iter->first << "):"
-											   << iter->second << std::endl;
-				}
-				std::cout << "---" << std::endl;
-			#endif
-			std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.find(cr);
-			
-			#ifdef _DBG_COUPLING_
-			std::cout << "====m_coupling_map====" << std::endl;
-			for(std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.begin();
-				iter != m_coupling_map.end(); ++iter)
-				{
-					
-					std::cout << "(src,dest) : " << iter->first.model->get_name()
-												 << "(" << iter->first.model;
-					std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
-					for(coupling_relation cr: iter->second)
-					{
-						std::cout << "\t";
-						std::cout << cr.model->get_name()
-												 << "(" << cr.model;
-						std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
-						std::cout << std::endl;
-					}
-					
-				}
-				std::cout << "====" << std::endl;
-			#endif
-			if (iter != m_coupling_map.end())
-			{	
-				for(coupling_relation cr : iter->second)
-				{
-					// External Output Coupling Handling
-					if (cr.model == this)
-					{
 
-					}
-					else
-					{
-						// internal coupling handling
-						std::map<CModel*, IExecutor>::iterator dst = m_model_executor_map.find(cr.model);
-						if (dst != m_model_executor_map.end())
-						{
-							m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
+			std::cout << "model|executor : " << iter->first->get_name() << "("
+				<< iter->first << "):"
+				<< iter->second << std::endl;
+		}
+		std::cout << "---" << std::endl;
+#endif
+		std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.find(cr);
 
-							dst->second->external_transition(*cr.port, msg_deliver);
-							dst->second->set_req_time(m_global_t);
+#ifdef _DBG_COUPLING_
+		std::cout << "====m_coupling_map====" << std::endl;
+		for (std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.begin();
+			iter != m_coupling_map.end(); ++iter)
+		{
 
-							m_schedule_list.insert(executor_item(dst->second->get_req_time(), dst->second));
-						}
-					}
-				}
-				
-			}
-			else
+			std::cout << "(src,dest) : " << iter->first.model->get_name()
+				<< "(" << iter->first.model;
+			std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
+			for (coupling_relation cr : iter->second)
 			{
-				#ifdef _DBG_UNCAUGHT_
-				std::cout << msg.get_source()->get_name() << ":" << msg.get_out_port()->m_name << std::endl;
-				std::cout << "msg uncaught" << std::endl;
-				#endif
-				// msg uncaught execption
+				std::cout << "\t";
+				std::cout << cr.model->get_name()
+					<< "(" << cr.model;
+				std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
+				std::cout << std::endl;
 			}
+
+		}
+		std::cout << "====" << std::endl;
+#endif
+		if (iter != m_coupling_map.end())
+		{
+			for (coupling_relation cr : iter->second)
+			{
+				// External Output Coupling Handling
+				if (cr.model == this)
+				{
+
+				}
+				else
+				{
+					// internal coupling handling
+					std::map<CModel*, IExecutor>::iterator dst = m_model_executor_map.find(cr.model);
+					if (dst != m_model_executor_map.end())
+					{
+						m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
+
+						dst->second->external_transition(*cr.port, msg);
+						dst->second->set_req_time(m_global_t);
+
+						m_schedule_list.insert(executor_item(dst->second->get_req_time(), dst->second));
+					}
+				}
+			}
+
+		}
+		else
+		{
+#ifdef _DBG_UNCAUGHT_
+			std::cout << msg.get_source()->get_name() << ":" << msg.get_out_port()->m_name << std::endl;
+			std::cout << "msg uncaught" << std::endl;
+#endif
+			// msg uncaught execption
 		}
 	}
 
@@ -187,7 +184,8 @@ namespace evsim
 			if (deliver.get_first_event_time() <= m_global_t)
 			{
 				Message msg = *deliver.get_contents().begin();
-				output_handling(deliver);
+				output_handling(msg);
+
 				deliver.get_contents().erase(deliver.get_contents().begin());
 				msg.reset();
 			}else

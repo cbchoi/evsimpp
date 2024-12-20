@@ -62,7 +62,7 @@ namespace evsim {
     TEST_F(AtomicTest, test_ext_transitions)
     {
         CDummyAtomic da = CDummyAtomic("da");
-        MessageDeliverer sm = MessageDeliverer();
+        Message sm = Message();
         port p1 = port("two");
         da.external_transition(p1, sm);
         EXPECT_EQ(da.IDLE2.m_name, da.get_current_state().m_name);

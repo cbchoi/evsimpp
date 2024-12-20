@@ -13,7 +13,7 @@ public:
     virtual ~iExecutor() = default;
 
 public:
-    virtual void external_transition(const port& port, MessageDeliverer& msg) = 0;
+    virtual void external_transition(const port& port, Message& msg) = 0;
     virtual void internal_transition() = 0;
     virtual void output_function(MessageDeliverer& msg) = 0;
     virtual Time time_advance() = 0;

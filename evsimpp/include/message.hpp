@@ -31,4 +31,7 @@ namespace evsim
 	public:
 		bool operator<(const message& rhs) const;
 	};
+
+	typedef std::shared_ptr<message> Message;
+	inline bool operator<(const Message& lhs, const Message& rhs) { return lhs.get()->get_scheduled_time() - rhs.get()->get_scheduled_time() < 0 ? true : false; }
 }

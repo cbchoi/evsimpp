@@ -12,6 +12,8 @@
 
 using namespace evsim;
 
+#define MODEL_DEBUG
+
 class CWaitGEN :public CAtomicModel
 {
 public:
@@ -23,26 +25,32 @@ public:
 		SET_INIT_STATE(IDLE);
 	}
 
-	~CWaitGEN()
+	~CWaitGEN() override
 	{
 	
 	}
 
-	virtual void external_transition(const port& _port, MessageDeliverer& msg)
+	virtual void external_transition(const port& _port, Message& msg) override
 	{
+#ifdef MODEL_DEBUG
+		std::cout << get_name().m_name << std::endl;
+		std::cout << "[DEBUG] EXT_TRANS" << std::endl;
+#endif
 		if (CUR_STATE == IDLE)
 		{
 			SET_NEXT_STATE(GEN);
 		}
 	}
 
-	virtual void internal_transition()
+	virtual void internal_transition() override
 	{
 		// TODO: Handle Dynamic Generation of States
-		
+#ifdef MODEL_DEBUG
+		std::cout << "[DEBUG] INT_TRANS: Element Count" << elem_count << std::endl;
+#endif		
 	};
 
-	virtual void output_function(evsim::MessageDeliverer& msg_deliver)
+	virtual void output_function(evsim::MessageDeliverer& msg_deliver) override
 	{
 		if (CUR_STATE == GEN)
 		{
@@ -50,6 +58,9 @@ public:
 			msg_deliver.insert_message(msg);
 			elem_count++;
 		}
+#ifdef MODEL_DEBUG
+		std::cout << "[DEBUG] OUTPUT" << elem_count << std::endl;
+#endif		
 	};
 
 public:
