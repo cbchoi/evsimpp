@@ -17,7 +17,7 @@ namespace evsim {
 		bobject.reset();
 	}
 
-	void CAtomicExecutor::external_transition(const port& port, MessageDeliverer& msg)
+	void CAtomicExecutor::external_transition(const port& port, Message& msg)
 	{
 		behavior_object->external_transition(port, msg);
 	}
