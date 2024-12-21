@@ -6,6 +6,9 @@
 #include "system_executor.hpp"
 
 #include "model_dummy_coupled.hpp"
+#include "model_skeleton_coupled.hpp"
+#include "model_buffer.hpp"
+
 #include "gtest/gtest.h"
 
 namespace evsim {
@@ -95,47 +98,75 @@ namespace evsim {
         EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
     }
 
-#if 0
     TEST_F(StructureTest, test_external_output_coupling)
     {
         /**/
         CDummyCoupled* dc = new CDummyCoupled("dc");
-        CDummyAtomic* da = new CDummyAtomic("da");
         se->register_entity(dc, 0, Infinity);
-        se->register_entity(da, 0, Infinity);
 
         port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
 
         se->insert_coupling(se, input, dc, dc->one);
-        se->insert_coupling(dc, dc->output, da, da->one);
+        se->insert_coupling(dc, dc->output, se, output);
 
         Message msg1 = se->create_message(input);
         se->insert_external_event(msg1);
 
         se->simulate(10);
-        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(dc->find_model("Model1"))->elem_count, 10);
+        EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
 
     TEST_F(StructureTest, test_internal_coupling)
     {
-        CDummyCoupled* da = new CDummyCoupled("da");
-        se->register_entity(da, 0, Infinity);
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
 
-        port& input1 = se->create_input_port("one");
-        port& input2 = se->create_input_port("two");
+        CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
+        port& sc_input = sc->create_input_port("sc_input");
+        port& sc_output = sc->create_output_port("sc_output");
 
-        se->insert_coupling(se, input1, da, da->one);
-        //se->insert_coupling(se, input2, da, da->two);
+        se->register_entity(sc, 0, Infinity);
 
-        Message msg1 = se->create_message(input1);
+        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        sc->insert_model(pWaitGen1);
+
+        CBuffer* buffer = new CBuffer("buf");
+        sc->insert_model(buffer);
+
+        se->insert_coupling(se, input, sc, sc_input);
+        se->insert_coupling(sc, sc_output, se, output);
+        sc->insert_coupling(sc, sc_input, pWaitGen1, pWaitGen1->input);
+        sc->insert_coupling(pWaitGen1, pWaitGen1->output, buffer, buffer->input);
+        sc->insert_coupling(buffer, buffer->output, sc, sc_output);
+
+        Message msg1 = se->create_message(input);
         se->insert_external_event(msg1);
-        Message msg2 = se->create_message(input2, 5);
-        //se->insert_external_event(msg2);
 
         se->simulate(10);
-        EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model1"))->elem_count, 10);
-        //EXPECT_EQ(std::dynamic_pointer_cast<CWaitGEN>(da->find_model("Model2"))->elem_count, 5);
+        EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
-#endif
+    TEST_F(StructureTest, test_relay)
+    {
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
+
+        CDummyCoupled* dc = new CDummyCoupled("dummy");
+
+        se->register_entity(dc, 0, Infinity);
+
+        CBuffer* pWaitGen1 = new CBuffer("buf");
+        se->register_entity(pWaitGen1, 0, Infinity);
+
+        se->insert_coupling(se, input, dc, dc->one);
+        se->insert_coupling(dc, dc->output, pWaitGen1, pWaitGen1->input);
+
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
+
+        se->simulate(10);
+        EXPECT_EQ(pWaitGen1->elem_count, 10);
+    }
+
 }
 

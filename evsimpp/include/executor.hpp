@@ -9,7 +9,7 @@ namespace evsim {
 class iExecutor
 {
 public:
-    iExecutor();
+    iExecutor(Model model, iExecutor* parent);
     virtual ~iExecutor() = default;
 
 public:
@@ -23,7 +23,11 @@ public:
     virtual Time get_req_time() = 0;
     void set_global_time(Time _time);
 
-private:
+    Model get_behavior_object() { return bobject; }
+    iExecutor* get_parent_executor() { return parent_executor; }
+protected:
+    iExecutor* parent_executor;
+    Model bobject;
     Time global_t;
 };
 

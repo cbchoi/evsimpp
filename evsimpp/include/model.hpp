@@ -29,7 +29,7 @@ public:
 	virtual void register_input_port(port& port);
 	virtual void register_output_port(port& port);
 
-	private:
+protected:
 	StringInfo m_model_name;
 
 	std::set<port> m_in_port;

@@ -14,6 +14,7 @@ namespace evsim
 
     };
 
+    static port INVAILD_PORT("invaild");
 }
 
 #define DECLARE_INPUT_PORT(X) \

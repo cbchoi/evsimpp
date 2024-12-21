@@ -11,7 +11,7 @@ namespace evsim {
 	class CAtomicExecutor:public iExecutor
 	{
 	public:
-		CAtomicExecutor(Model pbehavior, Time creation_t);
+		CAtomicExecutor(Model pbehavior, iExecutor* parent, Time creation_t);
 		virtual ~CAtomicExecutor();
 
 	public:
@@ -27,8 +27,7 @@ namespace evsim {
 		Time next_event_t; // Next event time
 		Time request_t;  // Request time initialized to infinity
 
-		CModel* m_engine;
-		Model bobject;
+		
 		CAtomicModel* behavior_object;
 	};
 }
