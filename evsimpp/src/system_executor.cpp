@@ -1,4 +1,5 @@
 #include "system_executor.hpp"
+#include "system_executor.hpp"
 
 #include <vector>
 #include <thread>
@@ -43,6 +44,7 @@ namespace evsim
 	{
 		std::shared_ptr<port> _port = std::make_shared <port>(name);
 		m_external_input_ports[name] = _port;
+		m_in_port.insert(*_port);
 		return *_port;
 	}
 
@@ -55,6 +57,7 @@ namespace evsim
 	{
 		std::shared_ptr<port> _port = std::make_shared <port>(name);
 		m_external_output_ports[name] = _port;
+		m_out_port.insert(*_port);
 		return *_port;
 	}
 
@@ -66,6 +69,14 @@ namespace evsim
 	void CSystemExecutor::register_entity(CModel* model, Time itime, Time dtime)
 	{
 		m_wait_object_list.insert(create_constraint(itime, dtime, model));
+	}
+
+	void CSystemExecutor::external_transition(const port& _port, Message& msg)
+	{
+		if (out_port().find(_port) != out_port().end())
+		{
+			m_external_output_event.insert_message(msg);
+		}
 	}
 
 	void CSystemExecutor::create_entity()

@@ -13,7 +13,7 @@
 
 namespace evsim{
 
-class CSystemExecutor: public CModel
+class CSystemExecutor: public CModel, public iExecutor
 {
 private:
 	CSystemExecutor(std::string _name, SimConfig config);
@@ -47,6 +47,15 @@ public:
 	CExecutorFactory* get_executor_factory() { return m_config.ef; }
 
 	MessageDeliverer& get_external_output_deliverer() { return m_external_output_event; }
+
+	virtual void external_transition(const port& _port, Message& msg);
+	virtual void internal_transition() {};
+	virtual void output_function(MessageDeliverer& msg) {};
+	virtual Time time_advance() { return -1; };
+
+	virtual void set_req_time(Time global_time) {};
+	virtual Time get_req_time() { return -1; };
+
 protected:
 	void create_entity();
 	void output_handling(Message& msg_deliver);

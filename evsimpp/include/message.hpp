@@ -1,10 +1,11 @@
 #pragma once
 
 #include "object.hpp"
-#include "model.hpp"
+//#include "model.hpp"
 
 namespace evsim
 {
+	class CModel;
 	class CAtomicModel;
 	class CSystemExecutor;
 
