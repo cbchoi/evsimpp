@@ -2,7 +2,7 @@
 #include "system_executor.hpp"
 
 evsim::CHierarchicalCoupled::CHierarchicalCoupled(Model pbehavior, CExecutorFactory* ef, iExecutor* parent, Time creation_t,  Time current_t)
-	:bobject(pbehavior), request_t(current_t), next_event_t(current_t), m_parent(parent)
+	:iExecutor(pbehavior, parent), request_t(current_t), next_event_t(current_t), m_ef(ef)
 {
 	behavior_object = dynamic_cast<CCoupledModel*>(bobject.get());
 	// create every executor for internal models
@@ -31,6 +31,12 @@ evsim::CHierarchicalCoupled::~CHierarchicalCoupled()
 
 void evsim::CHierarchicalCoupled::external_transition(const port& _port, Message& msg)
 {
+	if(parent_executor->get_behavior_object() == nullptr)
+	{
+		coupling_relation cr = coupling_relation(behavior_object, &_port);
+		route_message(cr, msg);
+	}
+
 	if (behavior_object->out_port().find(_port) != behavior_object->out_port().end())
 	{
 		// Hierarchical Route
@@ -38,66 +44,7 @@ void evsim::CHierarchicalCoupled::external_transition(const port& _port, Message
 	else
 	{
 		coupling_relation cr = coupling_relation(behavior_object, msg->get_out_port());
-
-#ifdef _DBG_MODEL_EXECUTOR_
-		std::cout << "Message:";
-		std::cout << msg.get_source() << ":" << msg.get_out_port() << std::endl;
-		std::cout << "---m_model_executor_map---" << std::endl;
-		for (std::map<CModel*, IExecutor*>::iterator iter = m_model_executor_map.begin();
-			iter != m_model_executor_map.end(); ++iter)
-		{
-
-			std::cout << "model|executor : " << iter->first->get_name() << "("
-				<< iter->first << "):"
-				<< iter->second << std::endl;
-		}
-		std::cout << "---" << std::endl;
-#endif
-		std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = behavior_object->get_couplings().find(cr);
-
-#ifdef _DBG_COUPLING_
-		std::cout << "====m_coupling_map====" << std::endl;
-		for (std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.begin();
-			iter != m_coupling_map.end(); ++iter)
-		{
-
-			std::cout << "(src,dest) : " << iter->first.model->get_name()
-				<< "(" << iter->first.model;
-			std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
-			for (coupling_relation cr : iter->second)
-			{
-				std::cout << "\t";
-				std::cout << cr.model->get_name()
-					<< "(" << cr.model;
-				std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
-				std::cout << std::endl;
-			}
-
-		}
-		std::cout << "====" << std::endl;
-#endif
-		if (iter != behavior_object->get_couplings().end())
-		{
-			for (coupling_relation cr : iter->second)
-			{
-				// internal coupling handling
-				std::map<CModel*, IExecutor>::iterator dst = m_model_executor_map.find(cr.model);
-				if (dst != m_model_executor_map.end())
-				{
-					m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
-
-					dst->second->external_transition(*cr.port, msg);
-					dst->second->set_req_time(request_t);
-
-					m_schedule_list.insert(executor_item(dst->second->get_req_time(), dst->second));
-				}
-			}
-
-		}
-		else
-		{
-
-		}
+		route_message(cr, msg);
 	}
 }
 
@@ -133,7 +80,9 @@ void evsim::CHierarchicalCoupled::output_function(MessageDeliverer& msg_deliver)
 				// External Output Coupling Handling
 				if (cr.model == behavior_object)
 				{
-					m_parent->external_transition(*cr.port, msg);
+					msg->set_source((CModel*)(cr.model));
+					//msg->set_port(cr.port);
+					parent_executor->external_transition(*cr.port, msg);
 				}
 				else
 				{
@@ -160,6 +109,71 @@ void evsim::CHierarchicalCoupled::output_function(MessageDeliverer& msg_deliver)
 evsim::Time evsim::CHierarchicalCoupled::time_advance()
 {
 	return (*m_schedule_list.begin()).p_executor->time_advance();
+}
+
+void evsim::CHierarchicalCoupled::route_message(coupling_relation& cr, Message& msg)
+{
+
+
+#ifdef _DBG_MODEL_EXECUTOR_
+	std::cout << "Message:";
+	std::cout << msg.get_source() << ":" << msg.get_out_port() << std::endl;
+	std::cout << "---m_model_executor_map---" << std::endl;
+	for (std::map<CModel*, IExecutor*>::iterator iter = m_model_executor_map.begin();
+		iter != m_model_executor_map.end(); ++iter)
+	{
+
+		std::cout << "model|executor : " << iter->first->get_name() << "("
+			<< iter->first << "):"
+			<< iter->second << std::endl;
+	}
+	std::cout << "---" << std::endl;
+#endif
+	std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = behavior_object->get_couplings().find(cr);
+
+#ifdef _DBG_COUPLING_
+	std::cout << "====m_coupling_map====" << std::endl;
+	for (std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.begin();
+		iter != m_coupling_map.end(); ++iter)
+	{
+
+		std::cout << "(src,dest) : " << iter->first.model->get_name()
+			<< "(" << iter->first.model;
+		std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
+		for (coupling_relation cr : iter->second)
+		{
+			std::cout << "\t";
+			std::cout << cr.model->get_name()
+				<< "(" << cr.model;
+			std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
+			std::cout << std::endl;
+		}
+
+	}
+	std::cout << "====" << std::endl;
+#endif
+	if (iter != behavior_object->get_couplings().end())
+	{
+		for (coupling_relation cr : iter->second)
+		{
+			// internal coupling handling
+			std::map<CModel*, IExecutor>::iterator dst = m_model_executor_map.find(cr.model);
+			if (dst != m_model_executor_map.end())
+			{
+				m_schedule_list.erase(executor_item(dst->second->get_req_time(), dst->second));
+
+				dst->second->external_transition(*cr.port, msg);
+				dst->second->set_req_time(request_t);
+
+				m_schedule_list.insert(executor_item(dst->second->get_req_time(), dst->second));
+			}
+		}
+
+	}
+	else
+	{
+
+	}
 }
 
 void evsim::CHierarchicalCoupled::set_req_time(Time global_time)

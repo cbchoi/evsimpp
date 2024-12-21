@@ -2,8 +2,8 @@
 
 namespace evsim
 {
-	iExecutor::iExecutor()
-	:global_t(0)
+	iExecutor::iExecutor(Model model, iExecutor* parent)
+	:global_t(0), bobject(model), parent_executor(parent)
 	{
 
 	}

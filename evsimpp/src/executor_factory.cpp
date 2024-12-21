@@ -9,7 +9,7 @@ namespace evsim
 	{
 		if((model->obj_type() & ATOMIC_TYPE) == ATOMIC_TYPE)
 		{
-			iExecutor* exec = new CAtomicExecutor(Model(model), created_t);
+			iExecutor* exec = new CAtomicExecutor(Model(model), parent, created_t);
 			return IExecutor(exec);
 		}
 		else if((model->obj_type() & COUPLED_TYPE) == COUPLED_TYPE)

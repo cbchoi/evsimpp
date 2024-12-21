@@ -7,6 +7,8 @@
 
 #include "model_dummy_coupled.hpp"
 #include "model_skeleton_coupled.hpp"
+#include "model_buffer.hpp"
+
 #include "gtest/gtest.h"
 
 namespace evsim {
@@ -129,14 +131,18 @@ namespace evsim {
         CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
         sc->insert_model(pWaitGen1);
 
-        CWaitGEN* pWaitGen2 = new CWaitGEN("buf");
-        sc->insert_model(pWaitGen2);
+        CBuffer* buffer = new CBuffer("buf");
+        sc->insert_model(buffer);
 
-        sc->insert_coupling(se, input, sc, sc_input);
-        sc->insert_coupling(sc, sc_output, se, output);
-        sc->insert_coupling(pWaitGen1, pWaitGen1->output, pWaitGen2, pWaitGen2->input);
+        se->insert_coupling(se, input, sc, sc_input);
+        se->insert_coupling(sc, sc_output, se, output);
+        sc->insert_coupling(sc, sc_input, pWaitGen1, pWaitGen1->input);
+        sc->insert_coupling(pWaitGen1, pWaitGen1->output, buffer, buffer->input);
+        sc->insert_coupling(buffer, buffer->output, sc, sc_output);
 
-        se->simulate(10);
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
+
         se->simulate(10);
         EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
     }
@@ -149,12 +155,15 @@ namespace evsim {
 
         se->register_entity(dc, 0, Infinity);
 
-        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        CBuffer* pWaitGen1 = new CBuffer("buf");
         se->register_entity(pWaitGen1, 0, Infinity);
 
-
+        se->insert_coupling(se, input, dc, dc->one);
         se->insert_coupling(dc, dc->output, pWaitGen1, pWaitGen1->input);
- 
+
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
+
         se->simulate(10);
         EXPECT_EQ(pWaitGen1->elem_count, 10);
     }

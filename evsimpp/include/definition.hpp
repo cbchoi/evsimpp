@@ -57,7 +57,7 @@ typedef struct EI
 typedef struct CR
 {
     CModel* model;
-    port*   port;
+    const port*   port;
 } coupling_relation;
 
 inline bool operator<(const executor_item& lhs, const executor_item& rhs) { return lhs.next_event_t - rhs.next_event_t < 0 ? true : false; }

@@ -59,6 +59,8 @@ public:
 protected:
 	void create_entity();
 	void output_handling(Message& msg_deliver);
+	virtual void route_message(coupling_relation& cr, Message& msg);
+
 	void event_delivery_handling(MessageDeliverer& deliver);
 protected:
 	SimConfig m_config;

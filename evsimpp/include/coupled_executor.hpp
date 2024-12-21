@@ -19,6 +19,8 @@ namespace evsim {
 		virtual void internal_transition();
 		virtual void output_function(MessageDeliverer& msg);
 		virtual Time time_advance();
+
+		virtual void route_message(coupling_relation& cr, Message& msg);
 	public:
 		void set_req_time(Time global_time);
 		Time get_req_time();
@@ -27,9 +29,8 @@ namespace evsim {
 		Time next_event_t; // Next event time
 		Time request_t;  // Request time initialized to infinity
 
-		iExecutor* m_parent;
-		Model bobject;
 		CCoupledModel* behavior_object;
+		CExecutorFactory* m_ef;
 
 	protected:
 		std::multiset<executor_item>		m_schedule_list;

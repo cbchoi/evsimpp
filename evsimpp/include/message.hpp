@@ -17,12 +17,15 @@ namespace evsim
 		virtual ~message() = default;
 	public:
 		virtual CModel* get_source() const { return msg_source; }
-		virtual port* get_out_port() const { return out_port; }
+		virtual const port* get_out_port() const { return out_port; }
 		virtual Time get_scheduled_time() const { return scheduled_time; }
+
+		virtual void set_source(CModel* model) { msg_source = model; }
+		virtual void set_port(const port* port) { out_port = port; }
 
 	protected:
 		CModel* msg_source;
-		port*	out_port;
+		const port*	out_port;
 
 		Time	scheduled_time;
 		static UNIQ OBJECT_ID;
