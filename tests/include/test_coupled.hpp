@@ -179,9 +179,14 @@ namespace evsim {
 
         se->register_entity(sc, 0, Infinity);
 
-        CDummySkeletonCoupled* sc2 = new CDummySkeletonCoupled("skeleton");
+        CDummySkeletonCoupled* sc2 = new CDummySkeletonCoupled("inside");
         port& sc_input2 = sc2->create_input_port("sc_input");
         port& sc_output2 = sc2->create_output_port("sc_output");
+
+        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        sc2->insert_model(pWaitGen1);
+        sc2->insert_coupling(sc2, sc_input2, pWaitGen1, pWaitGen1->input);
+        sc2->insert_coupling(pWaitGen1, pWaitGen1->output, sc2, sc_output2);
 
         sc->insert_model(sc2);
         sc->insert_coupling(sc, sc_input1, sc2, sc_input2);
@@ -189,6 +194,48 @@ namespace evsim {
 
         se->insert_coupling(se, input, sc, sc_input1);
         se->insert_coupling(sc, sc_output1, se, output);
+
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
+
+        se->simulate(10);
+        EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);
+    }
+
+    TEST_F(StructureTest, complex_example)
+    {
+        port& input = se->create_input_port("one");
+        port& output = se->create_output_port("output");
+
+        CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
+        port& sc_input1 = sc->create_input_port("sc_input");
+        port& sc_output1 = sc->create_output_port("sc_output");
+
+        se->register_entity(sc, 0, Infinity);
+
+        CDummySkeletonCoupled* sc2 = new CDummySkeletonCoupled("inside");
+        port& sc_input2 = sc2->create_input_port("sc_input");
+        port& sc_output2 = sc2->create_output_port("sc_output");
+
+        CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
+        sc2->insert_model(pWaitGen1);
+        sc2->insert_coupling(sc2, sc_input2, pWaitGen1, pWaitGen1->input);
+        sc2->insert_coupling(pWaitGen1, pWaitGen1->output, sc2, sc_output2);
+
+        sc->insert_model(sc2);
+        sc->insert_coupling(sc, sc_input1, sc2, sc_input2);
+        sc->insert_coupling(sc2, sc_output2, sc, sc_output1);
+
+        se->insert_coupling(se, input, sc, sc_input1);
+
+        CBuffer* buffer = new CBuffer("buf");
+        se->register_entity(buffer, 0, Infinity);
+
+    	se->insert_coupling(sc, sc_output1, buffer, buffer->input);
+        se->insert_coupling(buffer, output, se, output);
+
+        Message msg1 = se->create_message(input);
+        se->insert_external_event(msg1);
 
         se->simulate(10);
         EXPECT_EQ(se->get_external_output_deliverer().get_contents().size(), 10);

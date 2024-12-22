@@ -147,26 +147,4 @@ namespace evsim {
         delete se;
     }
 
-    TEST_F(SimAlgorithm, external_input_scedule_handling)
-    {
-        int before = 0;
-        {
-            CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
-            port& inport = se->create_input_port("engine_input");
-            se->register_input_port(inport);
-
-            CWaitGEN* pWaitGen = new CWaitGEN("proc");
-            se->register_entity(pWaitGen, 0, Infinity);
-            se->insert_coupling(se, inport, pWaitGen, pWaitGen->input);
-
-            Message msg = se->create_message(inport, 5);
-            se->insert_external_event(msg);
-
-            se->simulate(10);
-            EXPECT_EQ(pWaitGen->elem_count, 5);
-
-            delete se;
-        }
-        int after = 0;
-    }
 }

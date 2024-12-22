@@ -50,7 +50,7 @@ public:
 
 	virtual void external_transition(const port& _port, Message& msg);
 	virtual void internal_transition() {};
-	virtual void output_function(MessageDeliverer& msg) {};
+	virtual void output_function(MessageDeliverer& msg);
 	virtual Time time_advance() { return -1; };
 
 	virtual void set_req_time(Time global_time) {};
@@ -58,10 +58,9 @@ public:
 
 protected:
 	void create_entity();
-	void output_handling(Message& msg_deliver);
 	virtual void route_message(coupling_relation& cr, Message& msg);
 
-	void event_delivery_handling(MessageDeliverer& deliver);
+	void external_event_routing(MessageDeliverer& deliver);
 protected:
 	SimConfig m_config;
 	static UNIQ OBJECT_ID;
