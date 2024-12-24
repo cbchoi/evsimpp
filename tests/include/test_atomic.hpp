@@ -43,14 +43,11 @@ namespace evsim {
     {  
         CDummyAtomic da = CDummyAtomic("da");
         {
-            int before = 0;
 			{
                 const std::set<Port>::iterator iter = da.in_port().find(Port("two"));
                 ASSERT_NE(iter, da.in_port().end());
                 EXPECT_EQ(iter->m_name, "two");
 			}
-            int after = 0;
-            
         }
 
         {

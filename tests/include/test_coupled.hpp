@@ -54,13 +54,11 @@ namespace evsim {
     {
         CDummyCoupled da = CDummyCoupled("da");
         {
-            int before = 0;
             {
                 const std::set<Port>::iterator iter = da.in_port().find(Port("two"));
                 ASSERT_NE(iter, da.in_port().end());
                 EXPECT_EQ(iter->m_name, "two");
             }
-            int after = 0;
         }
 
         {
@@ -149,7 +147,6 @@ namespace evsim {
     TEST_F(StructureTest, test_relay)
     {
         Port& input = se->create_input_port("one");
-        Port& output = se->create_output_port("output");
 
         CDummyCoupled* dc = new CDummyCoupled("dummy");
 
