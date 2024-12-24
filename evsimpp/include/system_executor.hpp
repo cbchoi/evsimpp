@@ -23,20 +23,20 @@ public:
 	static CSystemExecutor* create_system_executor(SimConfig config, std::string _name = "default");
 
 public:
-	port& create_input_port(std::string name);
-	port& get_input_port(std::string name);
-	port& create_output_port(std::string name);
-	port& get_output_port(std::string name);
+	Port& create_input_port(std::string name);
+	Port& get_input_port(std::string name);
+	Port& create_output_port(std::string name);
+	Port& get_output_port(std::string name);
 
 	void register_entity(CModel* model, Time itime, Time dtime);
 	void destroy_entity();
 
 
-	void insert_coupling(CModel* p_src, port& src_port,
-						 CModel* p_dst, port& dst_port);
+	void insert_coupling(CModel* p_src, Port& src_port,
+						 CModel* p_dst, Port& dst_port);
 
 	void insert_external_event(Message msg);
-	Message create_message(port& in_port, Time _time = 0);
+	Message create_message(Port& in_port, Time _time = 0);
 
 	void sim_set_up();
 	void sim_tear_down();
@@ -48,7 +48,7 @@ public:
 
 	MessageDeliverer& get_external_output_deliverer() { return m_external_output_event; }
 
-	virtual void external_transition(const port& _port, Message& msg);
+	virtual void external_transition(const Port& _port, Message& msg);
 	virtual void internal_transition() {};
 	virtual void output_function(MessageDeliverer& msg);
 	virtual Time time_advance() { return -1; };
@@ -78,8 +78,8 @@ protected:
 
 	std::map<coupling_relation, std::vector<coupling_relation>> m_coupling_map;
 
-	std::map<std::string, std::shared_ptr<port>> m_external_input_ports; // TODO std::string -> StringInfo
-	std::map<std::string, std::shared_ptr<port>> m_external_output_ports;
+	std::map<std::string, std::shared_ptr<Port>> m_external_input_ports; // TODO std::string -> StringInfo
+	std::map<std::string, std::shared_ptr<Port>> m_external_output_ports;
 protected:
 	MessageDeliverer m_external_input_event; // TODO MemoryLeak Check
 	MessageDeliverer m_external_output_event;

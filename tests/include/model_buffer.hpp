@@ -30,7 +30,7 @@ public:
 
 	}
 
-	virtual void external_transition(const port& _port, Message& msg) override
+	virtual void external_transition(const Port& _port, Message& msg) override
 	{
 #ifdef MODEL_DEBUG
 		std::cout << get_name().m_name << std::endl;

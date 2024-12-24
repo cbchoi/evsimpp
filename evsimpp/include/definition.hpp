@@ -13,7 +13,7 @@ namespace evsim{
 class CModel;
 typedef std::shared_ptr<CModel> Model;
 
-class port;
+class Port;
 
 class iExecutor;
 typedef std::shared_ptr<iExecutor> IExecutor;
@@ -57,7 +57,7 @@ typedef struct EI
 typedef struct CR
 {
     CModel* model;
-    const port*   port;
+    const Port*   port;
 } coupling_relation;
 
 inline bool operator<(const executor_item& lhs, const executor_item& rhs) { return lhs.next_event_t - rhs.next_event_t < 0 ? true : false; }

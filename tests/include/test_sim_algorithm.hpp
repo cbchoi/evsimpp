@@ -132,7 +132,7 @@ namespace evsim {
     TEST_F(SimAlgorithm, external_input_handling)
     {
         CSystemExecutor* se = CSystemExecutor::create_system_executor(sim_config);
-        port& inport = se->create_input_port("engine_input");
+        Port& inport = se->create_input_port("engine_input");
         se->register_input_port(inport);
 
         CWaitGEN* pWaitGen = new CWaitGEN("proc");

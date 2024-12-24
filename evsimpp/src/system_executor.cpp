@@ -40,28 +40,28 @@ namespace evsim
 	CSystemExecutor* CSystemExecutor::create_system_executor(SimConfig config, std::string _name)
 	{ return new CSystemExecutor(_name, config); }
 
-	port& CSystemExecutor::create_input_port(std::string name)
+	Port& CSystemExecutor::create_input_port(std::string name)
 	{
-		std::shared_ptr<port> _port = std::make_shared <port>(name);
+		std::shared_ptr<Port> _port = std::make_shared <Port>(name);
 		m_external_input_ports[name] = _port;
 		m_in_port.insert(*_port);
 		return *_port;
 	}
 
-	port& CSystemExecutor::get_input_port(std::string name)
+	Port& CSystemExecutor::get_input_port(std::string name)
 	{
 		return *m_external_input_ports[name];
 	}
 
-	port& CSystemExecutor::create_output_port(std::string name)
+	Port& CSystemExecutor::create_output_port(std::string name)
 	{
-		std::shared_ptr<port> _port = std::make_shared <port>(name);
+		std::shared_ptr<Port> _port = std::make_shared <Port>(name);
 		m_external_output_ports[name] = _port;
 		m_out_port.insert(*_port);
 		return *_port;
 	}
 
-	port& CSystemExecutor::get_output_port(std::string name)
+	Port& CSystemExecutor::get_output_port(std::string name)
 	{
 		return *m_external_output_ports[name];
 	}
@@ -71,7 +71,7 @@ namespace evsim
 		m_wait_object_list.insert(create_constraint(itime, dtime, model));
 	}
 
-	void CSystemExecutor::external_transition(const port& _port, Message& msg)
+	void CSystemExecutor::external_transition(const Port& _port, Message& msg)
 	{
 	coupling_relation cr(msg->get_source() == nullptr?this: msg->get_source(), &_port);
 		std::map<coupling_relation, std::vector<coupling_relation>>::iterator iter = m_coupling_map.find(cr);
@@ -143,7 +143,7 @@ namespace evsim
 			iter != m_model_executor_map.end(); ++iter)
 		{
 
-			std::cout << "model|executor : " << iter->first->get_name() << "("
+			std::cout << "p_model|executor : " << iter->first->get_name() << "("
 				<< iter->first << "):"
 				<< iter->second << std::endl;
 		}
@@ -157,15 +157,15 @@ namespace evsim
 			iter != m_coupling_map.end(); ++iter)
 		{
 
-			std::cout << "(src,dest) : " << iter->first.model->get_name()
-				<< "(" << iter->first.model;
-			std::cout << "):" << iter->first.port->m_name << "(" << iter->first.port << ")->" << std::endl;
+			std::cout << "(src,dest) : " << iter->first.p_model->get_name()
+				<< "(" << iter->first.p_model;
+			std::cout << "):" << iter->first.p_port->m_name << "(" << iter->first.p_port << ")->" << std::endl;
 			for (coupling_relation cr : iter->second)
 			{
 				std::cout << "\t";
-				std::cout << cr.model->get_name()
-					<< "(" << cr.model;
-				std::cout << "):" << cr.port->m_name << "(" << cr.port << ")";
+				std::cout << cr.p_model->get_name()
+					<< "(" << cr.p_model;
+				std::cout << "):" << cr.p_port->m_name << "(" << cr.p_port << ")";
 				std::cout << std::endl;
 			}
 
@@ -178,7 +178,7 @@ namespace evsim
 			{
 				if(scr.model == this)
 				{
-					std::set<port>::iterator iter = out_port().find(*scr.port);
+					std::set<Port>::iterator iter = out_port().find(*scr.port);
 					if (iter != out_port().end())
 					{
 						m_external_output_event.insert_message(msg);
@@ -228,7 +228,7 @@ namespace evsim
 	{
 	}
 
-	void CSystemExecutor::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
+	void CSystemExecutor::insert_coupling(CModel* p_src, Port& src_port, CModel* p_dst, Port& dst_port)
 	{
 		coupling_relation src(p_src, &src_port);
 		coupling_relation dst(p_dst, &dst_port);
@@ -243,7 +243,7 @@ namespace evsim
 		m_external_input_event.insert_message(msg);
 	}
 
-	Message CSystemExecutor::create_message(port& port, Time _time)
+	Message CSystemExecutor::create_message(Port& port, Time _time)
 	{
 		message* pMessage = new message(this, port, _time);
 		return Message(pMessage);

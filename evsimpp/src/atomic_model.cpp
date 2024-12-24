@@ -54,7 +54,7 @@ namespace evsim
 		m_cancel_reschedule_f = sw;
 	}
 
-	Message CAtomicModel::create_message(port& port, Time _time)
+	Message CAtomicModel::create_message(Port& port, Time _time)
 	{
 		message* pMessage = new message(this, port, _time);
 		return Message(pMessage);

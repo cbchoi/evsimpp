@@ -18,8 +18,8 @@ namespace evsim {
 		virtual ~CCoupledModel();
 
 	public:
-		void insert_coupling(CModel* p_src, port& src_port,
-			CModel* p_dst, port& dst_port);
+		void insert_coupling(CModel* p_src, Port& src_port,
+			CModel* p_dst, Port& dst_port);
 
 		void insert_model(CModel* pModel);
 

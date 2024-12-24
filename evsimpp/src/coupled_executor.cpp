@@ -6,7 +6,7 @@ evsim::CHierarchicalCoupled::CHierarchicalCoupled(Model pbehavior, CExecutorFact
 {
 	behavior_object = dynamic_cast<CCoupledModel*>(bobject.get());
 	// create every executor for internal models
-	// find earlist model
+	// find earlist p_model
 	for(auto& pairs:behavior_object->get_models())
 	{
 		IExecutor executor = ef->create_entity(pairs.second.get(), this, creation_t, current_t);
@@ -29,7 +29,7 @@ evsim::CHierarchicalCoupled::~CHierarchicalCoupled()
 	bobject.reset();
 }
 
-void evsim::CHierarchicalCoupled::external_transition(const port& _port, Message& msg)
+void evsim::CHierarchicalCoupled::external_transition(const Port& _port, Message& msg)
 {
 	// if msg->get_source() == parent => EIC
 	CModel* source = dynamic_cast<CModel*>(parent_executor);
@@ -64,7 +64,7 @@ void evsim::CHierarchicalCoupled::output_function(MessageDeliverer& msg_deliver)
 	if(!msg_deliver.has_contents())
 	{
 		// TODO Implement
-		// 1. invoke output_function of internal model
+		// 1. invoke output_function of internal p_model
 		IExecutor iexec = (*m_schedule_list.begin()).p_executor;
 		iexec->output_function(msg_deliver);
 	}

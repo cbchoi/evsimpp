@@ -19,7 +19,7 @@ namespace evsim
 		}
 
 
-		virtual void external_transition(const port& port, Message& msg)
+		virtual void external_transition(const Port& port, Message& msg)
 		{
 			std::cout << "Uncaught Message:"
 				<< "From: " << (msg.get())->get_source()->get_name() << "\n"
