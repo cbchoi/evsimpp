@@ -21,7 +21,7 @@ namespace evsim
 		}
 	}
 
-	void CCoupledModel::insert_coupling(CModel* p_src, port& src_port, CModel* p_dst, port& dst_port)
+	void CCoupledModel::insert_coupling(CModel* p_src, Port& src_port, CModel* p_dst, Port& dst_port)
 	{
 		coupling_relation src(p_src, &src_port);
 		coupling_relation dst(p_dst, &dst_port);

@@ -5,30 +5,30 @@
 
 namespace evsim
 {
-    class port:public StringInfo
+    class Port:public StringInfo
     {
     public:
-        port(std::string name);
-        port(unsigned long hash, std::string name);
-        virtual ~port();
+        Port(std::string name);
+        Port(unsigned long hash, std::string name);
+        virtual ~Port();
 
     };
 
-    static port INVAILD_PORT("invaild");
+    static Port INVAILD_PORT("invaild");
 }
 
 #define DECLARE_INPUT_PORT(X) \
-class InPort_##X:public evsim::port{\
-public: InPort_##X(): evsim::port(#X) { }\
-    bool operator==(const port& rhs) const{\
+class InPort_##X:public evsim::Port{\
+public: InPort_##X(): evsim::Port(#X) { }\
+    bool operator==(const Port& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 
 #define REGISTER_INPUT_PORT(port_instance) \
     register_input_port(port_instance)
 
 #define DECLARE_OUTPUT_PORT(X) \
-class OutPort_##X:public evsim::port{\
-public: OutPort_##X(): evsim::port(#X) { }\
+class OutPort_##X:public evsim::Port{\
+public: OutPort_##X(): evsim::Port(#X) { }\
     bool operator==(const StringInfo& rhs) const{\
         return rhs.m_hash == m_hash ? true : false;}} X
 

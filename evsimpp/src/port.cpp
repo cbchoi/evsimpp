@@ -4,17 +4,17 @@
 
 namespace evsim
 {
-	port::port(std::string name) :StringInfo(name)
+	Port::Port(std::string name) :StringInfo(name)
 	{
 	}
 
-	port::port(unsigned long hash, std::string name)
+	Port::Port(unsigned long hash, std::string name)
 		: StringInfo(hash, name)
 	{
 
 	}
 
-	port::~port()
+	Port::~Port()
 	{
 		
 	}

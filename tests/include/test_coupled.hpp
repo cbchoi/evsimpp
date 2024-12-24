@@ -56,7 +56,7 @@ namespace evsim {
         {
             int before = 0;
             {
-                const std::set<port>::iterator iter = da.in_port().find(port("two"));
+                const std::set<Port>::iterator iter = da.in_port().find(Port("two"));
                 ASSERT_NE(iter, da.in_port().end());
                 EXPECT_EQ(iter->m_name, "two");
             }
@@ -64,7 +64,7 @@ namespace evsim {
         }
 
         {
-            const std::set<port>::iterator iter = da.in_port().find(port("four"));
+            const std::set<Port>::iterator iter = da.in_port().find(Port("four"));
             EXPECT_EQ(iter, da.in_port().end());
         }
     }
@@ -81,8 +81,8 @@ namespace evsim {
         CDummyCoupled* da = new CDummyCoupled("da");
         se->register_entity(da, 0, Infinity);
 
-        port& input1 = se->create_input_port("one");
-        port& input2 = se->create_input_port("two");
+        Port& input1 = se->create_input_port("one");
+        Port& input2 = se->create_input_port("two");
 
         se->insert_coupling(se, input1, da, da->one);
         se->insert_coupling(se, input2, da, da->two);
@@ -104,8 +104,8 @@ namespace evsim {
         CDummyCoupled* dc = new CDummyCoupled("dc");
         se->register_entity(dc, 0, Infinity);
 
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
+        Port& input = se->create_input_port("one");
+        Port& output = se->create_output_port("output");
 
         se->insert_coupling(se, input, dc, dc->one);
         se->insert_coupling(dc, dc->output, se, output);
@@ -119,12 +119,12 @@ namespace evsim {
 
     TEST_F(StructureTest, test_internal_coupling)
     {
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
+        Port& input = se->create_input_port("one");
+        Port& output = se->create_output_port("output");
 
         CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
-        port& sc_input = sc->create_input_port("sc_input");
-        port& sc_output = sc->create_output_port("sc_output");
+        Port& sc_input = sc->create_input_port("sc_input");
+        Port& sc_output = sc->create_output_port("sc_output");
 
         se->register_entity(sc, 0, Infinity);
 
@@ -148,8 +148,8 @@ namespace evsim {
     }
     TEST_F(StructureTest, test_relay)
     {
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
+        Port& input = se->create_input_port("one");
+        Port& output = se->create_output_port("output");
 
         CDummyCoupled* dc = new CDummyCoupled("dummy");
 
@@ -170,18 +170,18 @@ namespace evsim {
 
     TEST_F(StructureTest, test_hierarchy)
     {
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
+        Port& input = se->create_input_port("one");
+        Port& output = se->create_output_port("output");
 
         CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
-        port& sc_input1 = sc->create_input_port("sc_input");
-        port& sc_output1 = sc->create_output_port("sc_output");
+        Port& sc_input1 = sc->create_input_port("sc_input");
+        Port& sc_output1 = sc->create_output_port("sc_output");
 
         se->register_entity(sc, 0, Infinity);
 
         CDummySkeletonCoupled* sc2 = new CDummySkeletonCoupled("inside");
-        port& sc_input2 = sc2->create_input_port("sc_input");
-        port& sc_output2 = sc2->create_output_port("sc_output");
+        Port& sc_input2 = sc2->create_input_port("sc_input");
+        Port& sc_output2 = sc2->create_output_port("sc_output");
 
         CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
         sc2->insert_model(pWaitGen1);
@@ -204,18 +204,18 @@ namespace evsim {
 
     TEST_F(StructureTest, complex_example)
     {
-        port& input = se->create_input_port("one");
-        port& output = se->create_output_port("output");
+        Port& input = se->create_input_port("one");
+        Port& output = se->create_output_port("output");
 
         CDummySkeletonCoupled* sc = new CDummySkeletonCoupled("skeleton");
-        port& sc_input1 = sc->create_input_port("sc_input");
-        port& sc_output1 = sc->create_output_port("sc_output");
+        Port& sc_input1 = sc->create_input_port("sc_input");
+        Port& sc_output1 = sc->create_output_port("sc_output");
 
         se->register_entity(sc, 0, Infinity);
 
         CDummySkeletonCoupled* sc2 = new CDummySkeletonCoupled("inside");
-        port& sc_input2 = sc2->create_input_port("sc_input");
-        port& sc_output2 = sc2->create_output_port("sc_output");
+        Port& sc_input2 = sc2->create_input_port("sc_input");
+        Port& sc_output2 = sc2->create_output_port("sc_output");
 
         CWaitGEN* pWaitGen1 = new CWaitGEN("gen");
         sc2->insert_model(pWaitGen1);

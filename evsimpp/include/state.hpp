@@ -15,7 +15,7 @@ namespace evsim
         virtual ~State();
     public:
         Time get_deadline() const { return m_deadline; }
-        void udpate_deadline(Time td) { m_deadline = td; }
+        void update_deadline(Time td) { m_deadline = td; }
 
         Time m_deadline;
     };

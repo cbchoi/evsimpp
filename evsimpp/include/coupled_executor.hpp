@@ -15,7 +15,7 @@ namespace evsim {
 		virtual ~CHierarchicalCoupled();
 
 	public:
-		virtual void external_transition(const port& _port, Message& msg);
+		virtual void external_transition(const Port& _port, Message& msg);
 		virtual void internal_transition();
 		virtual void output_function(MessageDeliverer& msg);
 		virtual Time time_advance();

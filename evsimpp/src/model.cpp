@@ -25,22 +25,22 @@ namespace evsim
 		m_model_name = _name;
 	}
 
-	const std::set<port>& CModel::in_port() const
+	const std::set<Port>& CModel::in_port() const
 	{
 		return m_in_port;
 	}
 
-	const std::set<port>& CModel::out_port() const
+	const std::set<Port>& CModel::out_port() const
 	{
 		return m_out_port;
 	}
 
-	void CModel::register_input_port(port& _port)
+	void CModel::register_input_port(Port& _port)
 	{
 		m_in_port.insert(_port);
 	}
 
-	void CModel::register_output_port(port& _port)
+	void CModel::register_output_port(Port& _port)
 	{
 		m_out_port.insert(_port);
 	}

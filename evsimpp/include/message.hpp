@@ -1,7 +1,7 @@
 #pragma once
 
 #include "object.hpp"
-//#include "model.hpp"
+//#include "p_model.hpp"
 
 namespace evsim
 {
@@ -12,20 +12,20 @@ namespace evsim
 	class message :public CObject
 	{
 	private:
-		message(CModel* src, port& port, Time _time = 0);
+		message(CModel* src, Port& port, Time _time = 0);
 	public:
 		virtual ~message() = default;
 	public:
 		virtual CModel* get_source() const { return msg_source; }
-		virtual const port* get_out_port() const { return out_port; }
+		virtual const Port* get_out_port() const { return out_port; }
 		virtual Time get_scheduled_time() const { return scheduled_time; }
 
 		virtual void set_source(CModel* model) { msg_source = model; }
-		virtual void set_port(const port* port) { out_port = port; }
+		virtual void set_port(const Port* port) { out_port = port; }
 
 	protected:
 		CModel* msg_source;
-		const port*	out_port;
+		const Port*	out_port;
 
 		Time	scheduled_time;
 		static UNIQ OBJECT_ID;
