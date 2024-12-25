@@ -229,7 +229,7 @@ namespace evsim {
         se->register_entity(buffer, 0, Infinity);
 
     	se->insert_coupling(sc, sc_output1, buffer, buffer->input);
-        se->insert_coupling(buffer, output, se, output);
+        se->insert_coupling(buffer, buffer->output, se, output);
 
         Message msg1 = se->create_message(input);
         se->insert_external_event(msg1);
