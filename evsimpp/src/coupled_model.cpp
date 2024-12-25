@@ -36,6 +36,11 @@ namespace evsim
 		internal_models.insert(std::make_pair(pModel->get_name(), Model(pModel)));
 	}
 
+	void CCoupledModel::remove_model(CModel* pModel)
+	{
+		internal_models.erase(pModel->get_name());
+	}
+
 	Model CCoupledModel::find_model(std::string name)
 	{
 		StringInfo siName(name);

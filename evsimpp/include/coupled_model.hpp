@@ -22,6 +22,7 @@ namespace evsim {
 			CModel* p_dst, port& dst_port);
 
 		void insert_model(CModel* pModel);
+		void remove_model(CModel* pModel);
 
 	public: // Utility Functions
 		Model find_model(std::string name);
