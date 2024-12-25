@@ -269,7 +269,6 @@ namespace evsim
 	Time CSystemExecutor::schedule(Time t)
 	{
 		m_engine_status = SIMULATION_RUN;
-		create_entity();
 		//handle_external_input_event()
 
 		executor_item ei = *m_schedule_list.begin();
@@ -282,7 +281,8 @@ namespace evsim
 		// Main processing loop
 		MessageDeliverer msg_deliverer;
  		while (ei.next_event_t <= m_global_t) {
-			
+			create_entity();
+
 			ei.p_executor->output_function(msg_deliverer);
 			output_function(msg_deliverer);
 			
@@ -314,6 +314,8 @@ namespace evsim
 				std::this_thread::sleep_for(std::chrono::duration<Time>(delta));
 			}
 		}
+
+		m_engine_status = SIMULATION_PAUSE;
 		return m_global_t;
 	}
 
