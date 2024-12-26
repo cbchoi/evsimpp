@@ -270,6 +270,7 @@ namespace evsim
 	{
 		m_engine_status = SIMULATION_RUN;
 		//handle_external_input_event()
+		create_entity();
 
 		executor_item ei = *m_schedule_list.begin();
 		auto before = std::chrono::high_resolution_clock::now();
