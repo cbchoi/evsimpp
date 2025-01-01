@@ -3,6 +3,7 @@
 #include "test_atomic.hpp"
 #include "test_coupled.hpp"
 #include "test_sim_algorithm.hpp"
+#include "test_load_test.hpp"
 
 
 using namespace evsim;
