@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <set>
 #include <map>
 #include <vector>
@@ -10,6 +11,7 @@
 
 #include "model.hpp"
 #include "message_deliverer.hpp"
+#include "thread_pool.hpp"
 
 namespace evsim{
 
@@ -58,6 +60,10 @@ public:
 
 protected:
 	void create_entity();
+	void create_entity_legacy();
+	void create_entity_optimized();
+	void process_events_serial(MessageDeliverer& deliver, executor_item& ei);
+	void process_events_parallel_batch(MessageDeliverer& deliver, executor_item& ei);
 	virtual void route_message(coupling_relation& cr, Message& msg);
 
 	void external_event_routing(MessageDeliverer& deliver);
@@ -80,6 +86,8 @@ protected:
 
 	std::map<std::string, std::shared_ptr<Port>> m_external_input_ports; // TODO std::string -> StringInfo
 	std::map<std::string, std::shared_ptr<Port>> m_external_output_ports;
+
+	std::unique_ptr<ThreadPool> m_thread_pool;
 protected:
 	MessageDeliverer m_external_input_event; // TODO MemoryLeak Check
 	MessageDeliverer m_external_output_event;

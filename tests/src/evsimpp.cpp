@@ -4,6 +4,8 @@
 #include "test_coupled.hpp"
 #include "test_sim_algorithm.hpp"
 #include "test_load_test.hpp"
+#include "test_scheduler_options.hpp"
+#include "test_parallel_config.hpp"
 
 
 using namespace evsim;

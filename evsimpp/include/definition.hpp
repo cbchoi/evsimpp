@@ -37,6 +37,10 @@ constexpr long double Infinity = std::numeric_limits<long double>::max();
 typedef struct CC
 {
     Time create_t; Time destory_t; CModel* p_model;
+
+    CC() : create_t(0), destory_t(0), p_model(nullptr) {}
+    CC(Time create, Time destory, CModel* model) : create_t(create), destory_t(destory), p_model(model) {}
+
     bool operator<(const CC& rhs) { return create_t - rhs.create_t < 0 ? true : false; }
 } create_constraint;
 
@@ -45,19 +49,29 @@ inline bool operator<(const create_constraint& lhs, const create_constraint& rhs
 typedef struct DC
 {
     Time destory_t; CModel* p_model;
+
+    DC() : destory_t(0), p_model(nullptr) {}
+    DC(Time destory, CModel* model) : destory_t(destory), p_model(model) {}
 } destory_constraint;
 
 inline bool operator<(const destory_constraint& lhs, const destory_constraint& rhs) { return lhs.destory_t - rhs.destory_t < 0 ? true : false; }
 
 typedef struct EI
 {
-    Time next_event_t; IExecutor p_executor;
+    Time next_event_t;
+    IExecutor p_executor;
+
+    EI() : next_event_t(Infinity), p_executor(nullptr) {}
+    EI(Time next, IExecutor exec) : next_event_t(next), p_executor(exec) {}
 } executor_item;
 
 typedef struct CR
 {
     CModel* model;
     const Port*   port;
+
+    CR() : model(nullptr), port(nullptr) {}
+    CR(CModel* m, const Port* p) : model(m), port(p) {}
 } coupling_relation;
 
 inline bool operator<(const executor_item& lhs, const executor_item& rhs) { return lhs.next_event_t - rhs.next_event_t < 0 ? true : false; }

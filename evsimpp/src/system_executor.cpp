@@ -22,6 +22,21 @@ namespace evsim
 		m_engine_status = SIMULATION_WAIT;
 		m_execution_mode = BLOCKING;
 		m_simulation_mode = REAL;
+
+		if (m_config.parallel_mode != ParallelMode::Serial)
+		{
+			size_t workers = m_config.parallel_workers;
+			if (workers == 0)
+			{
+				size_t hc = std::thread::hardware_concurrency();
+				if (hc == 0)
+				{
+					hc = 2;
+				}
+				workers = std::min<std::size_t>(hc, 8);
+			}
+			m_thread_pool = std::make_unique<ThreadPool>(workers);
+		}
 	}
 
 	CSystemExecutor::~CSystemExecutor()
@@ -102,33 +117,192 @@ namespace evsim
 
 	void CSystemExecutor::create_entity()
 	{
-		if (!m_wait_object_list.empty())
+		if (m_config.use_optimized_scheduler)
 		{
-			std::vector<std::set<create_constraint>::iterator> del_list;
-			for (std::set<create_constraint>::iterator iter = m_wait_object_list.begin();
-				iter != m_wait_object_list.end(); ++iter)
+			create_entity_optimized();
+		}
+		else
+		{
+			create_entity_legacy();
+		}
+	}
+
+	void CSystemExecutor::create_entity_legacy()
+	{
+		if (m_wait_object_list.empty())
+		{
+			return;
+		}
+
+		std::vector<std::set<create_constraint>::iterator> del_list;
+		for (std::set<create_constraint>::iterator iter = m_wait_object_list.begin();
+			iter != m_wait_object_list.end(); ++iter)
+		{
+			if (iter->create_t <= m_global_t)
 			{
-				if (iter->create_t <= m_global_t)
+				Time d_time = iter->destory_t;
+				CModel* pModel = iter->p_model;
+				m_live_model_list.insert(destory_constraint(d_time, pModel));
+				IExecutor executor = m_config.ef->create_entity(pModel, this, m_global_t, m_global_t);
+
+				//executor->set_req_time(m_global_t);
+				executor_item ei(executor->time_advance(), executor);
+				m_schedule_list.insert(ei);
+				m_model_executor_map.insert(std::make_pair(pModel, executor));
+				del_list.push_back(iter);
+			}
+		}
+
+		for (std::vector<std::set<create_constraint>::iterator>::iterator iter = del_list.begin();
+			iter != del_list.end(); ++iter)
+		{
+			m_wait_object_list.erase(*iter);
+		}
+	}
+
+	void CSystemExecutor::create_entity_optimized()
+	{
+		for (auto iter = m_wait_object_list.begin();
+			iter != m_wait_object_list.end() && iter->create_t <= m_global_t;)
+		{
+			Time d_time = iter->destory_t;
+			CModel* pModel = iter->p_model;
+			m_live_model_list.insert(destory_constraint(d_time, pModel));
+			IExecutor executor = m_config.ef->create_entity(pModel, this, m_global_t, m_global_t);
+
+			executor_item ei(executor->time_advance(), executor);
+			m_schedule_list.insert(ei);
+			m_model_executor_map.insert(std::make_pair(pModel, executor));
+
+			iter = m_wait_object_list.erase(iter);
+		}
+	}
+
+	void CSystemExecutor::process_events_serial(MessageDeliverer& msg_deliverer, executor_item& ei)
+	{
+		while (ei.p_executor && ei.next_event_t <= m_global_t)
+		{
+			create_entity();
+			ei.p_executor->output_function(msg_deliverer);
+			output_function(msg_deliverer);
+
+			ei.p_executor->internal_transition();
+			ei.p_executor->set_req_time(m_global_t);
+			ei.next_event_t = ei.p_executor->get_req_time();
+
+			m_schedule_list.insert(ei);
+
+			if (m_schedule_list.empty())
+			{
+				ei = executor_item();
+				break;
+			}
+
+			ei = *m_schedule_list.begin();
+			m_schedule_list.erase(m_schedule_list.begin());
+		}
+	}
+
+	void CSystemExecutor::process_events_parallel_batch(MessageDeliverer& msg_deliverer, executor_item& ei)
+	{
+		if (!ei.p_executor)
+		{
+			return;
+		}
+
+		if (ei.next_event_t > m_global_t)
+		{
+			return;
+		}
+
+		if (!m_thread_pool)
+		{
+			process_events_serial(msg_deliverer, ei);
+			return;
+		}
+
+		std::vector<executor_item> current_batch;
+		current_batch.push_back(ei);
+
+		while (!m_schedule_list.empty() && m_schedule_list.begin()->next_event_t <= m_global_t)
+		{
+			current_batch.push_back(*m_schedule_list.begin());
+			m_schedule_list.erase(m_schedule_list.begin());
+		}
+
+		while (!current_batch.empty())
+		{
+			for (auto& item : current_batch)
+			{
+				create_entity();
+				item.p_executor->output_function(msg_deliverer);
+				output_function(msg_deliverer);
+			}
+
+			std::vector<executor_item> updated_items = current_batch;
+			std::size_t concurrency = std::min<std::size_t>(m_thread_pool->worker_count(), updated_items.size());
+			if (concurrency == 0)
+			{
+				concurrency = 1;
+			}
+			std::size_t chunk = (updated_items.size() + concurrency - 1) / concurrency;
+
+			if (updated_items.size() > 1)
+			{
+				for (std::size_t c = 0; c < concurrency; ++c)
 				{
-					Time d_time = iter->destory_t;
-					CModel* pModel = iter->p_model;
-					m_live_model_list.insert(destory_constraint(d_time, pModel));
-					IExecutor executor = m_config.ef->create_entity(pModel, this, m_global_t, m_global_t);
-					
-					//executor->set_req_time(m_global_t);
-					executor_item ei(executor->time_advance(), executor);
-					m_schedule_list.insert(ei);
-					m_model_executor_map.insert(std::make_pair(pModel, executor));
-					del_list.push_back(iter);
+					std::size_t start = c * chunk;
+					if (start >= updated_items.size())
+					{
+						break;
+					}
+					std::size_t end = std::min(start + chunk, updated_items.size());
+
+					m_thread_pool->enqueue([&, start, end]() {
+						for (std::size_t idx = start; idx < end; ++idx)
+						{
+							auto executor = updated_items[idx].p_executor;
+							executor->internal_transition();
+							executor->set_req_time(m_global_t);
+							updated_items[idx].next_event_t = executor->get_req_time();
+						}
+					});
+				}
+
+				m_thread_pool->wait();
+			}
+			else
+			{
+				for (auto& item : updated_items)
+				{
+					auto executor = item.p_executor;
+					executor->internal_transition();
+					executor->set_req_time(m_global_t);
+					item.next_event_t = executor->get_req_time();
 				}
 			}
 
-			for(std::vector<std::set<create_constraint>::iterator>::iterator iter = del_list.begin();
-				iter != del_list.end(); ++iter)
+			for (auto& item : updated_items)
 			{
-				m_wait_object_list.erase(*iter);
+				m_schedule_list.insert(item);
+			}
+
+			current_batch.clear();
+			while (!m_schedule_list.empty() && m_schedule_list.begin()->next_event_t <= m_global_t)
+			{
+				current_batch.push_back(*m_schedule_list.begin());
+				m_schedule_list.erase(m_schedule_list.begin());
 			}
 		}
+
+		if (m_schedule_list.empty())
+		{
+			ei = executor_item();
+			return;
+		}
+
+		ei = *m_schedule_list.begin();
+		m_schedule_list.erase(m_schedule_list.begin());
 	}
 
 	void CSystemExecutor::route_message(coupling_relation& cr, Message& msg)
@@ -280,25 +454,19 @@ namespace evsim
 
 		// Main processing loop
 		MessageDeliverer msg_deliverer;
- 		while (ei.next_event_t <= m_global_t) {
-			create_entity();
-
-			ei.p_executor->output_function(msg_deliverer);
-			output_function(msg_deliverer);
-			
-			ei.p_executor->internal_transition();
-			//Time prev_req_time = ei.p_executor->get_req_time();
-			ei.p_executor->set_req_time(m_global_t);
-			ei.next_event_t = ei.p_executor->get_req_time();
-
-			m_schedule_list.insert(ei);
-
-			// Move to the next object in multiset
-			ei = *m_schedule_list.begin();
-			m_schedule_list.erase(m_schedule_list.begin());
+		if (m_config.parallel_mode == ParallelMode::Serial)
+		{
+			process_events_serial(msg_deliverer, ei);
+		}
+		else
+		{
+			process_events_parallel_batch(msg_deliverer, ei);
 		}
 
-		m_schedule_list.insert(ei);
+		if (ei.p_executor)
+		{
+			m_schedule_list.insert(ei);
+		}
 		m_global_t += m_config.time_resolution;
 
 		// Call the entity destruction method
